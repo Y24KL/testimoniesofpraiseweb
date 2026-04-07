@@ -49,14 +49,32 @@
       display: flex; align-items: center; justify-content: center;
       text-align: center; overflow: hidden; background: #000;
     }
-    .hero-video {
-      position: absolute; top: 50%; left: 50%;
-      min-width: 100%; min-height: 100%;
-      width: auto; height: auto; z-index: -2;
-      transform: translate(-50%, -50%); object-fit: cover;
-    }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.4), var(--dark)); z-index: -1; }
-    .hero-content { max-width: 900px; padding: 0 20px; z-index: 1; }
+   .hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: 0; /* Changed from -2 */
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.4), var(--dark));
+  z-index: 1; /* Changed from -1 */
+}
+
+.hero-content {
+  max-width: 900px;
+  padding: 0 20px;
+  position: relative; /* Added this to make z-index work */
+  z-index: 2; /* Changed from 1 */
+}
     .hero-content h1 { font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.1; font-weight: 700; margin-bottom: 20px; }
     .gradient-text { background: linear-gradient(45deg, var(--accent), #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% auto; animation: shine 4s linear infinite; }
     @keyframes shine { to { background-position: 200% center; } }
@@ -150,17 +168,16 @@
     <button class="see-more-btn" onclick="showMoreVideos()">View More Recaps</button>
   </section>
 
-  <section class="testimony-section reveal" id="testimonies">
-    <div class="form-container">
-      <h2 style="color: var(--accent); margin-bottom: 2rem; text-align: center;">SUBMIT YOUR TESTIMONY</h2>
-      <form action="https://formspree.io/f/meepnpbb" method="POST">
-        <input type="text" name="Full Name" placeholder="Full Name" required>
-        <input type="text" name="Zone" placeholder="Church Zone" required>
-        <textarea name="Testimony" rows="6" placeholder="What has the Lord done for you?" required></textarea>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  </section>
+<div class="form-container">
+  <h2 style="color: var(--accent); margin-bottom: 2rem; text-align: center;">SUBMIT YOUR TESTIMONY</h2>
+  <form id="testimonyForm" action="https://formspree.io/f/meepnpbb" method="POST">
+    <input type="text" name="Full Name" placeholder="Full Name" required>
+    <input type="text" name="Zone" placeholder="Church Zone" required>
+    <textarea name="Testimony" rows="6" placeholder="What has the Lord done for you?" required></textarea>
+    <button type="submit">Submit</button>
+  </form>
+  <p id="formStatus" style="text-align: center; margin-top: 15px; color: var(--accent); font-weight: 600;"></p>
+</div>
 
   <div class="social-bubble" id="socialBubble">
     <div class="social-options">
