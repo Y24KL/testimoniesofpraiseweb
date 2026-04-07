@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Testimonies of Praise</title>
+  <link rel="icon" type="images/png" href="images/Testimonies of Praise.png">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4B006E; /* Deep Purple */
+      --accent: #f5c518;  /* Gold */
+      --dark: #000000;
+      --glass: rgba(75, 0, 110, 0.85);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--dark);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ===== PRELOADER ===== */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--dark);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    #loader img {
+      width: 120px;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .loader-finish {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav.main-nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--glass);
+      backdrop-filter: blur(15px);
+      padding: 0.8rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(245, 197, 24, 0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo img { height: 45px; }
+
+    .logo h1 {
+      color: var(--accent);
+      font-size: 1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: 0.3s;
+    }
+
+    nav ul li a:hover { color: var(--accent); }
+
+    /* ===== VIDEO HERO SECTION ===== */
+    .hero {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4), var(--dark));
+      z-index: -1;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      padding: 0 20px;
+      z-index: 1;
+    }
+
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      line-height: 1.1;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(45deg, var(--accent), #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+
+    .hero-content p {
+      font-size: 1.1rem;
+      color: #ddd;
+      margin-bottom: 40px;
+      line-height: 1.6;
+      max-width: 700px;
+      margin-inline: auto;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 15px 40px;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-5s px);
+    }
+
+    /* ===== REVEAL ANIMATION ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s ease-out;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== VIDEO GRID ===== */
+    .videos-section {
+      padding: 80px 5%;
+      background: var(--dark);
+      text-align: center;
+    }
+
+    .videos-section h2 {
+      color: var(--accent);
+      margin-bottom: 50px;
+      font-size: 2.2rem;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .video-card {
+      background: #111;
+      padding: 15px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: 0.4s;
+    }
+
+    .video-card:hover {
+      border-color: var(--accent);
+      transform: scale(1.02);
+    }
+
+    .video-card video { width: 100%; border-radius: 12px; }
+
+    .video-card h3 {
+      font-size: 1rem;
+      margin-top: 15px;
+      color: var(--accent);
+    }
+
+    .hidden { display: none; }
+
+    .see-more-btn {
+      margin-top: 40px;
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      padding: 12px 35px;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ===== FORM ===== */
+    .testimony-section {
+      padding: 100px 5%;
+      background: linear-gradient(180deg, var(--dark), var(--primary));
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      padding: 50px;
+      max-width: 700px;
+      margin: 0 auto;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-container input, .form-container textarea {
+      width: 100%;
+      padding: 18px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-container button {
+      width: 100%;
+      background: var(--accent);
+      color: var(--primary);
+      padding: 18px;
+      border: none;
+      font-weight: 800;
+      border-radius: 15px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    /* ===== SOCIALS ===== */
+    .social-bubble {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+    }
+
+    .bubble-main {
+      width: 60px;
+      height: 60px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .social-options {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s;
+    }
+
+    .social-bubble.active .social-options { opacity: 1; pointer-events: all; }
+
+    .social-icon {
+      width: 50px;
+      height: 50px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    footer {
+      padding: 40px;
+      text-align: center;
+      background: #000;
+      font-size: 0.8rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loader">
+    <img src="images/Testimonies of Praise.png" alt="Loading...">
+    <p style="color: var(--accent); margin-top: 15px; font-weight: 600; letter-spacing: 4px;">LOADING PRAISE</p>
+  </div>
+
+  <nav class="main-nav">
+    <div class="logo">
+      <img src="images/Testimonies of Praise.png" alt="Logo" />
+      <h1>TESTIMONIES OF PRAISE</h1>
+    </div>
+    <ul>
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="live.html">WATCH LIVE</a></li>
+      <li><a href="#testimonies">SHARE YOUR TESTIMONY</a></li>
+    </ul>
+  </nav>
+
+  <header id="home" class="hero">
+    <video autoplay muted loop playsinline class="hero-video">
+      <source src="videos/LOVEWORLD WORSHIP APP PROMO.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content reveal">
+      <h1>Testimonies of<br><span class="gradient-text">Praise</span></h1>
+      <p>Experience high-definition storytelling, unfiltered testimonies, and immersive worship blasted directly to your device.</p>
+      <div class="cta-group">
+        <a href="live.html" class="btn btn-primary">Watch Live Now</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="videos-section reveal" id="videos">
+    <h2>TESTIFIERS & RECAPS</h2>
+    <div class="video-grid">
+      <div class="video-card">
+        <video controls poster="images/poster1.jpg">
+          <source src="https://res.cloudinary.com/your_cloud_name/video/upload/v1/recap1.mp4" type="video/mp4">
+        </video>
+        <h3>TOP RECAP I</h3>
+      </div>
+      <div class="video-card">
+        <video controls>
+          <source src="https://res.cloudinary.com/your_cloud_name/video/upload/v1/testimony_abigail.mp4" type="video/mp4">
+        </video>
+        <h3>Sis Abigail & Brother</h3>
+      </div>
+      <div class="video-card hidden extra-video">
+        <video controls>
+          <source src="https://res.cloudinary.com/your_cloud_name/video/upload/v1/china_testimony.mp4" type="video/mp4">
+        </video>
+        <h3>Testifiers from China</h3>
+      </div>
+    </div>
+    <button class="see-more-btn" onclick="showMoreVideos()">View More Recaps</button>
+  </section>
+
+  <section class="testimony-section reveal" id="testimonies">
+    <div class="form-container">
+      <h2 style="color: var(--accent); margin-bottom: 2rem; text-align: center;">SUBMIT YOUR TESTIMONY</h2>
+      <form action="https://formspree.io/f/meepnpbb" method="POST">
+        <input type="text" name="Full Name" placeholder="Full Name" required>
+        <input type="text" name="Zone" placeholder="Church Zone" required>
+        <textarea name="Testimony" rows="6" placeholder="What has the Lord done for you?" required></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </section>
+
+  <div class="social-bubble" id="socialBubble">
+    <div class="social-options">
+      <a href="#" class="social-icon" title="Kingschat"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="25"></a>
+      <a href="#" class="social-icon" title="Instagram"><img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="25"></a>
+    </div>
+    <div class="bubble-main" onclick="toggleSocial()">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="var(--primary)"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.891.527 3.659 1.445 5.168L2.1 21.9l4.832-1.345C8.341 21.473 10.109 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Testimonies of Praise | Mediablast Networks<br>
+    <small>Spreading the Gospel through Personal Triumphs</small>
+  </footer>
+
+  <script>
+    // --- Preloader ---
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      setTimeout(() => { loader.classList.add('loader-finish'); }, 1000);
+      reveal(); // Check for reveals on load
+    });
+
+    // --- Reveal Logic ---
+    function reveal() {
+      const reveals = document.querySelectorAll(".reveal");
+      reveals.forEach(el => {
+        const windowHeight = window.innerHeight;
+        const elementTop = el.getBoundingClientRect().top;
+        if (elementTop < windowHeight - 100) {
+          el.classList.add("active");
+        }
+      });
+    }
+    window.addEventListener("scroll", reveal);
+
+    // --- Video Logic ---
+    function showMoreVideos() {
+      const extras = document.querySelectorAll('.extra-video');
+      extras.forEach(vid => vid.classList.toggle('hidden'));
+      const btn = document.querySelector('.see-more-btn');
+      btn.innerText = extras[0].classList.contains('hidden') ? "View More Recaps" : "Show Less";
+    }
+
+    // --- Social Bubble ---
+    function toggleSocial() {
+      document.getElementById('socialBubble').classList.toggle('active');
+    }
+  </script>
+</body>
+</html>
