@@ -5,7 +5,7 @@ import { getDatabase, ref, onValue, set, push, onDisconnect, serverTimestamp } f
 const firebaseConfig = {
     apiKey: "AIzaSyDKJSuZJ8ZqGE6rUZUjlPyMHiH4TgCdY6o",
     authDomain: "topweb-698e5.firebaseapp.com",
-    databaseURL: "",
+    databaseURL: "https://topweb-698e5-default-rtdb.firebaseio.com",
     projectId: "topweb-698e5",
     storageBucket: "topweb-698e5.firebasestorage.app",
     messagingSenderId: "675291297804",
