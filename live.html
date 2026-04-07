@@ -1,60 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WATCH LIVE | Testimonies of Praise</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Watch Live | Testimonies of Praise</title>
   <link rel="icon" type="image/png" href="images/Testimonies of Praise.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Keep all your Live CSS styles here! */
     :root {
       --primary: #4B006E;
       --accent: #f5c518;
       --dark: #000000;
+      --glass: rgba(75, 0, 110, 0.85);
     }
-    body {
-      background: var(--dark);
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background-color: var(--dark); color: #fff; overflow-x: hidden; padding-top: 100px; }
+
+    /* ===== NAVIGATION (Same as Index) ===== */
+    nav.main-nav {
+      position: fixed; top: 0; width: 100%; background: var(--glass);
+      backdrop-filter: blur(15px); padding: 0.8rem 5%;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 1000; border-bottom: 1px solid rgba(245, 197, 24, 0.1);
+    }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo img { height: 45px; }
+    .logo h1 { color: var(--accent); font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul li a { color: #fff; text-decoration: none; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; transition: 0.3s; }
+    nav ul li a:hover { color: var(--accent); }
+
+    /* ===== LIVE CONTENT ===== */
+    .live-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 30px rgba(245, 197, 24, 0.2);
+      background: #111;
+      margin-bottom: 30px;
+    }
+
+    .video-wrapper iframe, .video-wrapper video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .live-badge {
+      display: inline-block;
+      background: #ff0000;
       color: #fff;
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      overflow-x: hidden;
+      padding: 5px 15px;
+      border-radius: 5px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-bottom: 15px;
+      animation: blink 1.5s infinite;
     }
-    /* ... (Keep all your existing CSS styles here) ... */
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    .live-info h2 { color: var(--accent); font-size: 2rem; margin-bottom: 10px; }
+    .live-info p { color: #ccc; line-height: 1.6; margin-bottom: 20px; }
+
+    footer { padding: 40px; text-align: center; background: #000; font-size: 0.8rem; color: #666; margin-top: 50px; }
   </style>
 </head>
 <body>
 
-  <div id="loader">
-    <img src="images/Testimonies of Praise.png" width="100" alt="Loading...">
-  </div>
+  <nav class="main-nav">
+    <a href="index.html" class="logo">
+      <img src="images/Testimonies of Praise.png" alt="Logo" />
+      <h1>TESTIMONIES OF PRAISE</h1>
+    </a>
+    <ul>
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="live.html" style="color: var(--accent);">WATCH LIVE</a></li>
+      <li><a href="index.html#testimonies">SHARE YOUR TESTIMONY</a></li>
+    </ul>
+  </nav>
 
-  <header>
-    <h1>WATCH LIVE</h1>
-    <div class="viewer-count">
-      <div class="dot"></div>
-      <span id="count">0</span> WATCHING
-    </div>
-  </header>
-
-  <div class="main-content">
-    <div class="video-wrapper">
-      <video id="livePlayer" controls autoplay playsinline poster="images/live-poster.jpg"></video>
-    </div>
-
+  <main class="live-container">
+    <div class="live-badge">LIVE</div>
     <div class="live-info">
-      <h2>Testimonies of Praise Live</h2>
+      <h2>Watch Live Experience</h2>
       <p>Join thousands across the globe as we celebrate the triumphs of faith. Your miracle is next!</p>
-      <a href="index.html" class="back-btn">Return Home</a>
     </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  
-  <script src="js/main.js"></script>
+    <div class="video-wrapper">
+      <video controls autoplay playsinline>
+        <source src="YOUR_LIVE_STREAM_URL_HERE" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      
+      </div>
 
-  <script type="module" src="js/live.js"></script>
+    <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: 600;">← Return Home</a>
+  </main>
+
+  <footer>
+    © 2026 Testimonies of Praise | Mediablast Networks
+  </footer>
 
 </body>
 </html>
