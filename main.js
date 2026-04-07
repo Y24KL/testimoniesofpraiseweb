@@ -1,77 +1,60 @@
-// --- PRELOADER & ON-LOAD EVENTS ---
+// 1. THE PRELOADER FIX (Ensures the black "Loading" screen actually goes away)
 window.addEventListener('load', () => {
     const loader = document.getElementById('loader');
     if (loader) {
-        setTimeout(() => { 
-            loader.classList.add('loader-finish'); 
+        // Force the loader to disappear after 1 second
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            loader.style.pointerEvents = 'none';
+            console.log("Loader hidden successfully.");
         }, 1000);
     }
-    reveal(); // Check for reveal animations as soon as page loads
 });
 
-// --- SCROLL REVEAL ANIMATION ---
-function reveal() {
-    const reveals = document.querySelectorAll(".reveal");
-    reveals.forEach(el => {
-        const windowHeight = window.innerHeight;
-        const elementTop = el.getBoundingClientRect().top;
-        if (elementTop < windowHeight - 100) {
-            el.classList.add("active");
-        }
-    });
-}
-window.addEventListener("scroll", reveal);
-
-// --- HOME PAGE: TOGGLE EXTRA VIDEOS ---
-window.showMoreVideos = function() {
-    const extras = document.querySelectorAll('.extra-video');
-    if (extras.length === 0) return;
-
-    extras.forEach(vid => vid.classList.toggle('hidden'));
-    
-    const btn = document.querySelector('.see-more-btn');
-    if (btn) {
-        btn.innerText = extras[0].classList.contains('hidden') ? "View More Recaps" : "Show Less";
-    }
-}
-
-// --- HOME PAGE: SOCIAL BUBBLE ---
-window.toggleSocial = function() {
-    const bubble = document.getElementById('socialBubble');
-    if (bubble) {
-        bubble.classList.toggle('active');
-    }
-}
-
-// --- HOME PAGE: FETCH CMS VIDEOS ---
+// 2. FETCH VIDEOS FROM CMS
 async function fetchVideos() {
-    const grid = document.querySelector('.video-grid');
-    if (!grid) return; // If we aren't on the homepage, stop running this code
+    const grid = document.getElementById('videoGrid');
+    if (!grid) return;
 
     try {
+        // Path must match your GitHub folder exactly: data/videos.json
         const response = await fetch('data/videos.json');
-        if (!response.ok) throw new Error("CMS JSON not found");
+        
+        if (!response.ok) {
+            console.warn("videos.json not found yet. Showing placeholder.");
+            grid.innerHTML = '<p style="color:#888;">Testimonies will appear here once added via CMS.</p>';
+            return;
+        }
+
         const data = await response.json();
         
-        // Clear static HTML placeholders
-        grid.innerHTML = '';
-
-        data.videos.forEach((vid, index) => {
-            // Hide videos after the first 3
-            const isHidden = index >= 3 ? 'hidden extra-video' : '';
-            grid.innerHTML += `
-                <div class="video-card ${isHidden}">
-                    <video controls poster="${vid.poster || ''}">
-                        <source src="${vid.url}" type="video/mp4">
-                    </video>
-                    <h3>${vid.title}</h3>
-                </div>
-            `;
-        });
+        if (data.videos && data.videos.length > 0) {
+            grid.innerHTML = ''; // Clear the "Loading" text
+            data.videos.forEach(vid => {
+                grid.innerHTML += `
+                    <div class="video-card" style="background:#111; border-radius:10px; margin-bottom:20px; border:1px solid #333;">
+                        <video controls poster="${vid.poster || ''}" style="width:100%; display:block;">
+                            <source src="${vid.url}" type="video/mp4">
+                        </video>
+                        <h3 style="padding:15px; font-size:0.9rem; color:#f5c518;">${vid.title}</h3>
+                    </div>
+                `;
+            });
+        }
     } catch (err) {
-        console.warn("CMS Data not found. Showing static fallback videos.", err);
+        console.error("CMS Fetch Error:", err);
     }
 }
 
-// Run the fetch function when the document is ready
+// Run the video fetcher
 document.addEventListener('DOMContentLoaded', fetchVideos);
+
+// 3. UI FUNCTIONS
+window.toggleSocial = function() {
+    const bubble = document.getElementById('socialBubble');
+    if(bubble) bubble.classList.toggle('active');
+};
+
+window.showMoreVideos = function() {
+    alert("More testimonies coming soon!");
+};
