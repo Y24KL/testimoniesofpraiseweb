@@ -237,6 +237,41 @@
     function toggleSocial() {
       document.getElementById('socialBubble').classList.toggle('active');
     }
+
+  // --- Formspree Silent Submit ---
+    const testimonyForm = document.getElementById('testimonyForm');
+    const formStatus = document.getElementById('formStatus');
+
+    if (testimonyForm) {
+      testimonyForm.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Stops the default page redirect
+        formStatus.innerText = "Submitting..."; // Show loading state
+
+        const data = new FormData(event.target);
+
+        try {
+          const response = await fetch(event.target.action, {
+            method: testimonyForm.method,
+            body: data,
+            headers: {
+              'Accept': 'application/json' // This tells Formspree NOT to redirect
+            }
+          });
+
+          if (response.ok) {
+            formStatus.innerText = "Praise the Lord! Your testimony has been submitted.";
+            formStatus.style.color = "#4CAF50"; // Green success text
+            testimonyForm.reset(); // Clears the form fields
+          } else {
+            formStatus.innerText = "Oops! There was a problem submitting your form.";
+            formStatus.style.color = "#ff4444"; // Red error text
+          }
+        } catch (error) {
+          formStatus.innerText = "Oops! Check your internet connection and try again.";
+          formStatus.style.color = "#ff4444";
+        }
+      });
+    } 
   </script>
 </body>
 </html>
