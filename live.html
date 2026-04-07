@@ -59,17 +59,19 @@
       margin: 0;
     }
 
-    .viewer-count {
-      background: rgba(255, 0, 0, 0.1);
+    /* ===== DYNAMIC LIVE STATUS ===== */
+    .status-indicator {
+      background: rgba(255, 0, 0, 0.2);
       border: 1px solid #ff4444;
-      padding: 4px 12px;
+      padding: 4px 14px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #ff4444;
-      font-weight: 700;
+      font-weight: 800;
       display: flex;
       align-items: center;
       gap: 8px;
+      text-transform: uppercase;
     }
 
     .dot {
@@ -135,20 +137,25 @@
       background: #fff;
       transform: scale(1.05);
     }
+
+    @media (max-width: 768px) {
+      .video-wrapper { border-radius: 0; border: none; }
+      .main-content { padding: 1rem; margin-top: 80px; }
+    }
   </style>
 </head>
 <body>
 
   <div id="loader">
     <img src="images/Testimonies of Praise.png" width="100" alt="Loading...">
-    <p style="margin-top: 20px; color: var(--accent); letter-spacing: 2px;">LOADING STREAM...</p>
+    <p style="margin-top: 20px; color: var(--accent); letter-spacing: 2px;">CONNECTING TO STREAM...</p>
   </div>
 
   <header>
     <h1>WATCH LIVE</h1>
-    <div class="viewer-count">
+    <div id="liveStatus" class="status-indicator" style="display: none;">
       <div class="dot"></div>
-      <span id="count"></span>LIVE
+      LIVE
     </div>
   </header>
 
@@ -164,58 +171,49 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue, set, push, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-    // 1. FIXED FIREBASE CONFIG (Removed extra quote)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDKJSuZJ8ZqGE6rUZUjlPyMHiH4TgCdY6o", 
-      authDomain: "topweb-698e5.firebaseapp.com",
-      databaseURL: "https://topweb-698e5-default-rtdb.firebaseio.com/",
-      projectId: "topweb-698e5",
-      storageBucket: "topweb-698e5.firebasestorage.app",
-      messagingSenderId: "675291297804",
-      appId: "1:675291297804:web:6b2ae484e87be20bb4d629"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // 2. LIVE VIEWER TRACKING
-    const viewerRef = ref(db, 'liveViewers');
-    const myViewerRef = push(viewerRef);
-
-    set(myViewerRef, { joinedAt: serverTimestamp() });
-    onDisconnect(myViewerRef).remove();
-
-    onValue(viewerRef, (snapshot) => {
-      // Changed size logic to handle object keys
-      const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-      const countElement = document.getElementById('count');
-      if (countElement) countElement.innerText = count;
-    });
-
-    // 3. HLS PLAYER LOGIC
+  <script>
     const video = document.getElementById('livePlayer');
+    const liveStatus = document.getElementById('liveStatus');
     const streamUrl = 'https://vcpout-lw-wdc-01-sp.ceflixcdn.com/lxp/play1/playlist.m3u8'; 
 
+    // --- HLS (.m3u8) PLAYER LOGIC ---
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+
+      // Show the LIVE badge only when the manifest is successfully loaded
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        liveStatus.style.display = 'flex';
+        video.play().catch(e => console.log("Autoplay blocked, waiting for user interaction."));
+      });
+
+      // Hide the badge if there is a fatal error (Stream is offline)
+      hls.on(Hls.Events.ERROR, function(event, data) {
+        if (data.fatal) {
+          liveStatus.style.display = 'none';
+        }
+      });
+    } 
+    // --- NATIVE SUPPORT (Safari/iOS) ---
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = streamUrl;
+      video.addEventListener('playing', () => {
+        liveStatus.style.display = 'flex';
+      });
+      video.addEventListener('error', () => {
+        liveStatus.style.display = 'none';
+      });
     }
 
-    // 4. PRELOADER HIDE (Added a fallback to ensure it always hides)
+    // --- PRELOADER HIDE LOGIC ---
     function hideLoader() {
       const loader = document.getElementById('loader');
       if (loader) loader.classList.add('loader-finish');
     }
 
-    window.addEventListener('load', hideLoader);
-    // Fallback: If page takes too long, hide loader anyway after 4 seconds
+    // Hide loader when page is ready, or after 4 seconds maximum
+    window.addEventListener('load', () => setTimeout(hideLoader, 1000));
     setTimeout(hideLoader, 4000); 
   </script>
 
