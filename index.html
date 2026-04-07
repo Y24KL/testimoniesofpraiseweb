@@ -128,6 +128,62 @@
     </div>
   </section>
 
-  <script src="js/main.js"></script>
+ <script>
+    // 1. EMERGENCY LOADER KILLER (Runs immediately)
+    function hideLoader() {
+      const loader = document.getElementById('loader');
+      if (loader) {
+        loader.style.transition = "opacity 0.8s ease";
+        loader.style.opacity = "0";
+        setTimeout(() => {
+          loader.style.display = "none";
+        }, 800);
+        console.log("Loader forced to hide.");
+      }
+    }
+
+    // Hide loader after 1.5 seconds even if things are still loading
+    setTimeout(hideLoader, 1500);
+    window.addEventListener('load', hideLoader);
+
+    // 2. VIDEO FETCH LOGIC
+    async function fetchVideos() {
+      const grid = document.getElementById('videoGrid');
+      if (!grid) return;
+
+      try {
+        const response = await fetch('/data/videos.json');
+        if (!response.ok) throw new Error("Data file not found");
+        
+        const data = await response.json();
+        if (data.videos && data.videos.length > 0) {
+          grid.innerHTML = ''; 
+          data.videos.forEach(vid => {
+            grid.innerHTML += `
+              <div class="video-card" style="background:#111; border-radius:12px; overflow:hidden; border:1px solid #333; margin-bottom:20px;">
+                <video controls poster="${vid.poster || ''}" style="width:100%; display:block;">
+                  <source src="${vid.url}" type="video/mp4">
+                </video>
+                <h3 style="padding:15px; font-size:0.9rem; color:#f5c518;">${vid.title}</h3>
+              </div>
+            `;
+          });
+        }
+      } catch (err) {
+        console.warn("CMS info not ready yet.");
+        grid.innerHTML = '<p style="color:#666;">Recent testimonies will appear here.</p>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchVideos);
+
+    // 3. UI TOOLS
+    window.toggleSocial = function() {
+      const bubble = document.getElementById('socialBubble');
+      if(bubble) bubble.classList.toggle('active');
+    };
+  </script>
+</body>
+</html>
 </body>
 </html>
