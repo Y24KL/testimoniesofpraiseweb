@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Y24KL/testimoniesofpraiseweb
   branch: main
+  base_url: https://REPLACE-WITH-YOUR-OAUTH-SERVICE.onrender.com
+  auth_endpoint: auth
 
 publish_mode: editorial_workflow
 
