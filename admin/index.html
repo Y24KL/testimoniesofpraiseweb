@@ -49,21 +49,9 @@
     <div class="spinner"></div>
   </div>
 
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
   <script>
-    // Send users back into the CMS after an Identity invite/recovery redirect.
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-    }
-
     // Brand the editor preview pane with the site's fonts and palette.
     if (window.CMS) {
       window.CMS.registerPreviewStyle(`

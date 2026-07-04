@@ -1,0 +1,13 @@
+{
+  "name": "testimoniesofpraise-oauth-provider",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal GitHub OAuth provider for the Decap CMS admin portal.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
