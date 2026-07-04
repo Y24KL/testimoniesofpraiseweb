@@ -1,12 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Content Manager | Testimonies of Praise</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <link rel="icon" type="image/png" href="../images/Testimonies of Praise.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4B006E;
+      --accent: #f5c518;
+      --dark: #000000;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    html, body { height: 100%; background: var(--dark); }
+
+    /* ===== BRANDED SPLASH ===== */
+    #splash {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 50% 30%, var(--primary), var(--dark) 75%);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #splash img { width: 110px; animation: pulse 2s infinite ease-in-out; }
+    #splash p {
+      margin-top: 18px; color: var(--accent); letter-spacing: 3px;
+      font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+    }
+    #splash .spinner {
+      margin-top: 26px; width: 32px; height: 32px; border-radius: 50%;
+      border: 3px solid rgba(245, 197, 24, 0.25); border-top-color: var(--accent);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.08); opacity: 1; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .splash-hide { opacity: 0 !important; visibility: hidden !important; pointer-events: none; }
+  </style>
 </head>
 <body>
+
+  <div id="splash">
+    <img src="../images/Testimonies of Praise.png" alt="Testimonies of Praise" />
+    <p>Loading Content Manager</p>
+    <div class="spinner"></div>
+  </div>
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+  <script>
+    // Send users back into the CMS after an Identity invite/recovery redirect.
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+
+    // Brand the editor preview pane with the site's fonts and palette.
+    if (window.CMS) {
+      window.CMS.registerPreviewStyle(`
+        body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; padding: 20px; }
+        h1, h2, h3 { color: #f5c518; }
+        a { color: #f5c518; }
+      `, { raw: true });
+    }
+
+    // Fade the branded splash out once Decap CMS has mounted its UI.
+    (function () {
+      const splash = document.getElementById('splash');
+      let done = false;
+      function hide() {
+        if (done || !splash) return;
+        done = true;
+        splash.classList.add('splash-hide');
+        setTimeout(() => splash.remove(), 700);
+      }
+      const observer = new MutationObserver(() => {
+        const mounted = Array.from(document.body.children).some(
+          el => el !== splash && el.tagName !== 'SCRIPT'
+        );
+        if (mounted) hide();
+      });
+      observer.observe(document.body, { childList: true });
+      setTimeout(hide, 6000);
+    })();
+  </script>
 </body>
 </html>

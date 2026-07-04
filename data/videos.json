@@ -1,0 +1,17 @@
+{
+  "videos": [
+    {
+      "title": "Testimony from Sis Aroma",
+      "url": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1777464643/23_-_Sis._Aroma_Thomas_TOP_te7btm.mp4",
+      "poster": "images/poster1.jpg"
+    },
+    {
+      "title": "Testimony of Sis Helen",
+      "url": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1777466717/26_-_Sis._Helen_m5hg0e.mp4"
+    },
+    {
+      "title": "Testifiers from China",
+      "url": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1777467647/19_-_China_Top_kkwfgb.mp4"
+    }
+  ]
+}
