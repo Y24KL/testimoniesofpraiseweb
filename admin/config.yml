@@ -15,43 +15,52 @@ collections:
     label: "Testimony Videos"
     label_singular: "Video"
     description: "The testimony & recap videos shown in the homepage carousel."
-    file: "data/videos.json"
-    format: json
-    fields:
-      - label: "Videos"
-        name: "videos"
-        widget: list
-        summary: "{{title}}"
+    files:
+      - name: "videos"
+        label: "Testimony Videos"
+        file: "data/videos.json"
+        format: json
         fields:
-          - {label: "Title", name: "title", widget: string}
-          - {label: "Video URL", name: "url", widget: string, hint: "Direct link to the .mp4 file (e.g. a Cloudinary URL)"}
-          - {label: "Poster Image", name: "poster", widget: image, required: false}
+          - label: "Videos"
+            name: "videos"
+            widget: list
+            summary: "{{title}}"
+            fields:
+              - {label: "Title", name: "title", widget: string}
+              - {label: "Video URL", name: "url", widget: string, hint: "Direct link to the .mp4 file (e.g. a Cloudinary URL)"}
+              - {label: "Poster Image", name: "poster", widget: image, required: false}
 
   - name: "live"
     label: "Live Stream"
     label_singular: "Live Stream Settings"
     description: "Controls for the Watch Live page."
-    file: "data/stream.json"
-    format: json
-    fields:
-      - {label: "Stream URL (.m3u8)", name: "streamUrl", widget: string}
-      - {label: "Poster Image", name: "poster", widget: image, required: false}
-      - {label: "Live Info Heading", name: "heading", widget: string, default: "Testimonies of Praise Live"}
-      - {label: "Live Info Description", name: "description", widget: text}
+    files:
+      - name: "stream"
+        label: "Live Stream Settings"
+        file: "data/stream.json"
+        format: json
+        fields:
+          - {label: "Stream URL (.m3u8)", name: "streamUrl", widget: string}
+          - {label: "Poster Image", name: "poster", widget: image, required: false}
+          - {label: "Live Info Heading", name: "heading", widget: string, default: "Testimonies of Praise Live"}
+          - {label: "Live Info Description", name: "description", widget: text}
 
   - name: "settings"
     label: "Site Settings"
     label_singular: "Setting"
     description: "Homepage hero content and social links."
-    file: "data/settings.json"
-    format: json
-    fields:
-      - {label: "Hero Title", name: "heroTitle", widget: string, default: "Testimonies of Praise"}
-      - {label: "Hero Subtitle", name: "heroSubtitle", widget: text}
-      - {label: "Hero Video URL", name: "heroVideo", widget: string}
-      - label: "Social Links"
-        name: "socials"
-        widget: object
+    files:
+      - name: "settings"
+        label: "Site Settings"
+        file: "data/settings.json"
+        format: json
         fields:
-          - {label: "Kingschat", name: "kingschat", widget: string, required: false}
-          - {label: "X (Twitter)", name: "x", widget: string, required: false}
+          - {label: "Hero Title", name: "heroTitle", widget: string, default: "Testimonies of Praise"}
+          - {label: "Hero Subtitle", name: "heroSubtitle", widget: text}
+          - {label: "Hero Video URL", name: "heroVideo", widget: string}
+          - label: "Social Links"
+            name: "socials"
+            widget: object
+            fields:
+              - {label: "Kingschat", name: "kingschat", widget: string, required: false}
+              - {label: "X (Twitter)", name: "x", widget: string, required: false}
