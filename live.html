@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WATCH LIVE | Testimonies of Praise</title>
   <link rel="icon" type="image/png" href="images/Testimonies of Praise.png">
-  
+
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -122,6 +122,20 @@
       margin-bottom: 10px;
     }
 
+    .offline-card {
+      margin-top: 1.5rem;
+      padding: 18px 30px;
+      border: 1px solid rgba(245, 197, 24, 0.3);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .offline-card p { color: var(--accent); font-weight: 700; letter-spacing: 1px; margin: 0; }
+    .offline-card span { color: #999; font-size: 0.85rem; }
+
     .back-btn {
       margin-top: 2rem;
       padding: 12px 30px;
@@ -164,47 +178,96 @@
       <video id="livePlayer" controls autoplay playsinline poster="images/live-poster.jpg"></video>
     </div>
 
+    <div id="offlineState" class="offline-card">
+      <p>We're not live right now</p>
+      <span>Check back soon — testimonies are on the way!</span>
+    </div>
+
     <div class="live-info">
-      <h2>Testimonies of Praise Live</h2>
-      <p>Join thousands across the globe as we celebrate the triumphs of faith. Your miracle is next!</p>
+      <h2 id="infoHeading">Testimonies of Praise Live</h2>
+      <p id="infoDescription">Join thousands across the globe as we celebrate the triumphs of faith. Your miracle is next!</p>
       <a href="index.html" class="back-btn">Return Home</a>
     </div>
   </div>
 
   <script>
+    const DEFAULT_STREAM = {
+      streamUrl: 'https://vcpout-lw-wdc-01-sp.ceflixcdn.com/lxp/play1/playlist.m3u8',
+      poster: 'images/live-poster.jpg',
+      heading: 'Testimonies of Praise Live',
+      description: "Join thousands across the globe as we celebrate the triumphs of faith. Your miracle is next!"
+    };
+
     const video = document.getElementById('livePlayer');
     const liveStatus = document.getElementById('liveStatus');
-    const streamUrl = 'https://vcpout-lw-wdc-01-sp.ceflixcdn.com/lxp/play1/playlist.m3u8'; 
+    const offlineState = document.getElementById('offlineState');
+    const infoHeading = document.getElementById('infoHeading');
+    const infoDescription = document.getElementById('infoDescription');
+
+    function showLive() {
+      liveStatus.style.display = 'flex';
+      offlineState.style.display = 'none';
+    }
+
+    function showOffline() {
+      liveStatus.style.display = 'none';
+      offlineState.style.display = 'flex';
+    }
 
     // --- HLS (.m3u8) PLAYER LOGIC ---
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
+    function startPlayer(streamUrl) {
+      if (typeof Hls === 'undefined') {
+        console.warn('hls.js failed to load.');
+        showOffline();
+        return;
+      }
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(streamUrl);
+        hls.attachMedia(video);
 
-      // Show the LIVE badge only when the manifest is successfully loaded
-      hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        liveStatus.style.display = 'flex';
-        video.play().catch(e => console.log("Autoplay blocked, waiting for user interaction."));
-      });
+        // Show the LIVE badge only when the manifest is successfully loaded
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          showLive();
+          video.play().catch(e => console.log("Autoplay blocked, waiting for user interaction."));
+        });
 
-      // Hide the badge if there is a fatal error (Stream is offline)
-      hls.on(Hls.Events.ERROR, function(event, data) {
-        if (data.fatal) {
-          liveStatus.style.display = 'none';
-        }
-      });
-    } 
-    // --- NATIVE SUPPORT (Safari/iOS) ---
-    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = streamUrl;
-      video.addEventListener('playing', () => {
-        liveStatus.style.display = 'flex';
-      });
-      video.addEventListener('error', () => {
-        liveStatus.style.display = 'none';
-      });
+        // Show the offline state if there is a fatal error (stream is offline)
+        hls.on(Hls.Events.ERROR, function (event, data) {
+          if (data.fatal) showOffline();
+        });
+      }
+      // --- NATIVE SUPPORT (Safari/iOS) ---
+      else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = streamUrl;
+        video.addEventListener('playing', showLive);
+        video.addEventListener('error', showOffline);
+      } else {
+        showOffline();
+      }
     }
+
+    // --- Load stream settings from the CMS (data/stream.json) ---
+    (async function init() {
+      let config = DEFAULT_STREAM;
+      try {
+        const res = await fetch('data/stream.json');
+        if (res.ok) config = { ...DEFAULT_STREAM, ...(await res.json()) };
+      } catch (err) {
+        console.warn('Using default stream settings:', err);
+      }
+
+      if (config.poster) video.setAttribute('poster', config.poster);
+      if (infoHeading && config.heading) infoHeading.textContent = config.heading;
+      if (infoDescription && config.description) infoDescription.textContent = config.description;
+
+      startPlayer(config.streamUrl);
+
+      // If nothing has confirmed a live stream after a while, show the offline state
+      setTimeout(() => {
+        if (liveStatus.style.display !== 'flex') showOffline();
+      }, 8000);
+    })();
 
     // --- PRELOADER HIDE LOGIC ---
     function hideLoader() {
@@ -214,7 +277,7 @@
 
     // Hide loader when page is ready, or after 4 seconds maximum
     window.addEventListener('load', () => setTimeout(hideLoader, 1000));
-    setTimeout(hideLoader, 4000); 
+    setTimeout(hideLoader, 4000);
   </script>
 
 </body>
