@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="google-site-verification" content="nk2OzzMd4YfbEuN0H3mdaOzH2dElbE8qLF8UNykamXg" />
   <title>Welcome to Testimonies of Praise</title>
-  <link rel="icon" type="images/png" href="images/Testimonies of Praise.png">
+  <link rel="icon" type="image/png" href="images/Testimonies of Praise.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <style>
@@ -46,6 +46,16 @@
     nav ul li a { color: #fff; text-decoration: none; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; transition: 0.3s; }
     nav ul li a:hover { color: var(--accent); }
 
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer; padding: 8px; z-index: 1001;
+    }
+    .nav-toggle span {
+      display: block; width: 26px; height: 2px; background: #fff; margin: 6px 0; transition: 0.3s;
+    }
+    .main-nav.nav-open .nav-toggle span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .main-nav.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+    .main-nav.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
     /* ===== HERO SECTION ===== */
     .hero {
       position: relative; height: 100vh; width: 100%;
@@ -63,9 +73,12 @@
     @keyframes shine { to { background-position: 200% center; } }
     .hero-content p { font-size: 1.1rem; color: #ddd; margin-bottom: 40px; line-height: 1.6; max-width: 700px; margin-inline: auto; }
 
+    .cta-group { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
     .btn { display: inline-block; padding: 15px 40px; border-radius: 50px; font-weight: 700; text-decoration: none; text-transform: uppercase; transition: 0.3s; border: 2px solid transparent; cursor: pointer;}
     .btn-primary { background: var(--accent); color: var(--primary); }
     .btn-primary:hover { background: transparent; border-color: var(--accent); color: var(--accent); transform: translateY(-5px); }
+    .btn-secondary { background: transparent; border-color: rgba(245, 197, 24, 0.5); color: var(--accent); }
+    .btn-secondary:hover { background: var(--accent); border-color: var(--accent); color: var(--primary); transform: translateY(-5px); }
 
     /* ===== REVEAL EFFECT ===== */
     .reveal { opacity: 0; transform: translateY(40px); transition: all 1s ease-out; }
@@ -83,6 +96,15 @@
     .video-card:hover { transform: translateY(-10px); border-color: var(--accent); background: rgba(75, 0, 110, 0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
     .video-card video { width: 100%; aspect-ratio: 16/9; border-radius: 15px; object-fit: cover; margin-bottom: 15px; }
     .video-card h3 { font-size: 1.1rem; color: #fff; font-weight: 600; }
+
+    .video-state { width: 100%; text-align: center; padding: 60px 0; }
+    .video-state p { color: #888; margin-top: 12px; }
+    .mini-spinner {
+      width: 30px; height: 30px; border-radius: 50%; margin: 0 auto;
+      border: 3px solid rgba(245, 197, 24, 0.25); border-top-color: var(--accent);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Carousel Navigation */
     .swiper-button-next, .swiper-button-prev {
@@ -108,8 +130,20 @@
     .social-options { position: absolute; bottom: 80px; right: 0; display: flex; flex-direction: column; gap: 15px; opacity: 0; pointer-events: none; transition: 0.3s; }
     .social-bubble.active .social-options { opacity: 1; pointer-events: all; }
     .social-icon { width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
-    
+
     footer { padding: 60px 40px; text-align: center; background: #000; font-size: 0.8rem; color: #666; }
+
+    /* ===== MOBILE NAV ===== */
+    @media (max-width: 768px) {
+      .nav-toggle { display: block; }
+      nav.main-nav ul {
+        position: fixed; top: 0; right: -100%; height: 100vh; width: 70%; max-width: 320px;
+        background: var(--primary); flex-direction: column; justify-content: center; align-items: center;
+        gap: 2.5rem; transition: right 0.4s ease; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+      }
+      nav.main-nav.nav-open ul { right: 0; }
+      nav ul li a { font-size: 0.9rem; }
+    }
   </style>
 </head>
 <body>
@@ -119,15 +153,18 @@
     <p style="color: var(--accent); margin-top: 15px; font-weight: 600; letter-spacing: 4px;">LOADING PRAISE</p>
   </div>
 
-  <nav class="main-nav">
+  <nav class="main-nav" id="mainNav">
     <div class="logo">
       <img src="images/Testimonies of Praise.png" alt="Logo" />
       <h1>TESTIMONIES OF PRAISE</h1>
     </div>
+    <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
     <ul>
-      <li><a href="index.html">HOME</a></li>
-      <li><a href="live.html">WATCH LIVE</a></li>
-      <li><a href="#testimonies">SHARE YOUR TESTIMONY</a></li>
+      <li><a href="index.html" onclick="closeNav()">HOME</a></li>
+      <li><a href="live.html" onclick="closeNav()">WATCH LIVE</a></li>
+      <li><a href="#testimonies" onclick="closeNav()">SHARE YOUR TESTIMONY</a></li>
     </ul>
   </nav>
 
@@ -138,53 +175,24 @@
     <div class="hero-overlay"></div>
     <div class="hero-content reveal">
       <h1>Testimonies of<br><span class="gradient-text">Praise</span></h1>
-      <p>Experience high-definition storytelling, unfiltered testimonies, and immersive worship blasted directly to your device.</p>
+      <p id="heroSubtitle">Experience high-definition storytelling, unfiltered testimonies, and immersive worship blasted directly to your device.</p>
       <div class="cta-group">
         <a href="live.html" class="btn btn-primary">WATCH LIVE NOW</a>
+        <a href="#testimonies" class="btn btn-secondary">SHARE YOUR TESTIMONY</a>
       </div>
     </div>
   </header>
 
   <section class="videos-section reveal" id="videos">
     <h2>Testifiers & <span class="gradient-text">Recaps</span></h2>
-    
+
     <div class="swiper videoSwiper">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">
-          <div class="video-card">
-            <video controls poster="images/poster1.jpg" playsinline>
-              <source src="https://res.cloudinary.com/duw6xrnpn/video/upload/v1777464643/23_-_Sis._Aroma_Thomas_TOP_te7btm.mp4" type="video/mp4">
-            </video>
-            <h3>Testimony from Sis Aroma</h3>
-          </div>
+      <div class="swiper-wrapper" id="videoWrapper">
+        <div class="video-state">
+          <div class="mini-spinner"></div>
+          <p>Loading testimonies...</p>
         </div>
-        <div class="swiper-slide">
-          <div class="video-card">
-            <video controls playsinline>
-              <source src="https://res.cloudinary.com/duw6xrnpn/video/upload/v1777466717/26_-_Sis._Helen_m5hg0e.mp4" type="video/mp4">
-            </video>
-            <h3>Testimony of Sis Helen</h3>
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div class="video-card">
-            <video controls playsinline>
-              <source src="https://res.cloudinary.com/duw6xrnpn/video/upload/v1777467647/19_-_China_Top_kkwfgb.mp4" type="video/mp4">
-            </video>
-            <h3>Testifiers from China</h3>
-          </div>
-        </div>
-        </div>
-        <div class="swiper-slide">
-  <div class="video-card">
-    <video controls playsinline poster="URL_TO_YOUR_THUMBNAIL_IMAGE">
-      <source src="https://res.cloudinary.com/duw6xrnpn/video/upload/v1777464643/23_-_Sis._Aroma_Thomas_TOP_te7btm.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <h3>Testimony from Sis Aroma</h3>
-  </div>
-</div>
-      
+      </div>
       <div class="swiper-button-next"></div>
       <div class="swiper-button-prev"></div>
       <div class="swiper-pagination"></div>
@@ -197,13 +205,13 @@
       <form id="testimonyForm" action="https://formspree.io/f/meepnpbb" method="POST">
         <label class="optional-label">Full Name (Optional)</label>
         <input type="text" name="Full Name" placeholder="Your Name">
-        
+
         <label class="optional-label">Church Zone (Optional)</label>
         <input type="text" name="Zone" placeholder="e.g. Lagos Zone 2">
-        
+
         <label class="optional-label">Your Message (Optional)</label>
         <textarea name="Testimony" rows="6" placeholder="What has the Lord done for you?"></textarea>
-        
+
         <button type="submit">Submit Testimony</button>
       </form>
       <p id="formStatus" style="text-align: center; margin-top: 15px; color: var(--accent); font-weight: 600;"></p>
@@ -212,8 +220,8 @@
 
   <div class="social-bubble" id="socialBubble">
     <div class="social-options">
-      <a href="https://kingschat.online/user/testimonies.lmm" class="social-icon" title="Kingschat"><img src="images/Kc.png" width="25"></a>
-      <a href="https://x.com/testimonies_lmm" class="social-icon" title="X"><img src="images/X logo.png" width="25"></a>
+      <a href="https://kingschat.online/user/testimonies.lmm" class="social-icon" title="Kingschat" id="kingschatLink"><img src="images/Kc.png" width="25"></a>
+      <a href="https://x.com/testimonies_lmm" class="social-icon" title="X" id="xLink"><img src="images/X logo.png" width="25"></a>
     </div>
     <div class="bubble-main" onclick="toggleSocial()">
       <svg width="30" height="30" viewBox="0 0 24 24" fill="var(--primary)"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.891.527 3.659 1.445 5.168L2.1 21.9l4.832-1.345C8.341 21.473 10.109 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
@@ -226,75 +234,6 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script>
-    // --- Preloader ---
-    function hideLoader() {
-      const loader = document.getElementById('loader');
-      if (loader) {
-        loader.classList.add('loader-finish');
-        reveal();
-      }
-    }
-    window.addEventListener('load', hideLoader);
-    setTimeout(hideLoader, 3000);
-
-    // --- Reveal Logic ---
-    function reveal() {
-      const reveals = document.querySelectorAll(".reveal");
-      reveals.forEach(el => {
-        const windowHeight = window.innerHeight;
-        const elementTop = el.getBoundingClientRect().top;
-        if (elementTop < windowHeight - 100) el.classList.add("active");
-      });
-    }
-    window.addEventListener("scroll", reveal);
-
-    // --- Swiper Initialization ---
-    const swiper = new Swiper(".videoSwiper", {
-      slidesPerView: 1,
-      spaceBetween: 20,
-      loop: true,
-      grabCursor: true,
-      pagination: { el: ".swiper-pagination", clickable: true, dynamicBullets: true },
-      navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-      breakpoints: {
-        768: { slidesPerView: 2, spaceBetween: 30 },
-        1024: { slidesPerView: 3, spaceBetween: 40 }
-      }
-    });
-
-    // --- Social Toggle ---
-    function toggleSocial() {
-      document.getElementById('socialBubble').classList.toggle('active');
-    }
-
-    // --- Silent Form Submit ---
-    const testimonyForm = document.getElementById('testimonyForm');
-    const formStatus = document.getElementById('formStatus');
-
-    if (testimonyForm) {
-      testimonyForm.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        formStatus.innerText = "Submitting...";
-        const data = new FormData(event.target);
-        try {
-          const response = await fetch(event.target.action, {
-            method: testimonyForm.method,
-            body: data,
-            headers: { 'Accept': 'application/json' }
-          });
-          if (response.ok) {
-            formStatus.innerText = "Praise the Lord! Your testimony has been submitted.";
-            formStatus.style.color = "#4CAF50";
-            testimonyForm.reset();
-          } else {
-            formStatus.innerText = "There was a problem submitting your form.";
-          }
-        } catch (error) {
-          formStatus.innerText = "Check your connection and try again.";
-        }
-      });
-    }
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
