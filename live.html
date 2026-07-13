@@ -111,6 +111,18 @@
       display: block;
     }
 
+    #youtubePlayer {
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+    #youtubePlayer iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+    }
+
     .live-info {
       margin-top: 2rem;
       text-align: center;
@@ -176,6 +188,7 @@
   <div class="main-content">
     <div class="video-wrapper">
       <video id="livePlayer" controls autoplay playsinline poster="images/live-poster.jpg"></video>
+      <div id="youtubePlayer"></div>
     </div>
 
     <div id="offlineState" class="offline-card">
@@ -193,12 +206,17 @@
   <script>
     const DEFAULT_STREAM = {
       streamUrl: 'https://vcpout-lw-wdc-01-sp.ceflixcdn.com/lxp/play1/playlist.m3u8',
+      youtubeVideoId: '',
       poster: 'images/live-poster.jpg',
       heading: 'Testimonies of Praise Live',
       description: "Join thousands across the globe as we celebrate the triumphs of faith. Your miracle is next!"
     };
 
+    // Valid YouTube video IDs are 11 characters of A-Z a-z 0-9 _ -
+    const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/;
+
     const video = document.getElementById('livePlayer');
+    const youtubePlayer = document.getElementById('youtubePlayer');
     const liveStatus = document.getElementById('liveStatus');
     const offlineState = document.getElementById('offlineState');
     const infoHeading = document.getElementById('infoHeading');
@@ -210,12 +228,34 @@
     }
 
     function showOffline() {
+      video.style.display = 'none';
+      youtubePlayer.style.display = 'none';
+      youtubePlayer.innerHTML = '';
       liveStatus.style.display = 'none';
       offlineState.style.display = 'flex';
     }
 
-    // --- HLS (.m3u8) PLAYER LOGIC ---
-    function startPlayer(streamUrl) {
+    // --- YOUTUBE EMBED (counts as a real view on the channel) ---
+    function startYouTube(videoId) {
+      video.style.display = 'none';
+      youtubePlayer.innerHTML = '';
+
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      iframe.title = 'Testimonies of Praise Live on YouTube';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      youtubePlayer.appendChild(iframe);
+
+      youtubePlayer.style.display = 'block';
+      showLive();
+    }
+
+    // --- HLS (.m3u8) PLAYER LOGIC (fallback when no YouTube video is set) ---
+    function startHls(streamUrl) {
+      youtubePlayer.style.display = 'none';
+      video.style.display = 'block';
+
       if (typeof Hls === 'undefined') {
         console.warn('hls.js failed to load.');
         showOffline();
@@ -261,12 +301,18 @@
       if (infoHeading && config.heading) infoHeading.textContent = config.heading;
       if (infoDescription && config.description) infoDescription.textContent = config.description;
 
-      startPlayer(config.streamUrl);
+      const youtubeVideoId = (config.youtubeVideoId || '').trim();
+      if (youtubeVideoId && YOUTUBE_ID_PATTERN.test(youtubeVideoId)) {
+        startYouTube(youtubeVideoId);
+      } else {
+        if (youtubeVideoId) console.warn('Ignoring malformed YouTube video ID:', youtubeVideoId);
+        startHls(config.streamUrl);
 
-      // If nothing has confirmed a live stream after a while, show the offline state
-      setTimeout(() => {
-        if (liveStatus.style.display !== 'flex') showOffline();
-      }, 8000);
+        // If nothing has confirmed an HLS stream after a while, show the offline state
+        setTimeout(() => {
+          if (liveStatus.style.display !== 'flex') showOffline();
+        }, 8000);
+      }
     })();
 
     // --- PRELOADER HIDE LOGIC ---
