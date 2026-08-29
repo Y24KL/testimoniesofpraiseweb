@@ -49,6 +49,18 @@
     <div class="spinner"></div>
   </div>
 
+  <a
+    href="./analytics.html"
+    id="analyticsLink"
+    style="
+      position: fixed; top: 14px; right: 20px; z-index: 1000;
+      display: none; align-items: center; gap: 8px;
+      background: rgba(0,0,0,0.6); border: 1px solid rgba(245,197,24,0.4);
+      color: #f5c518; text-decoration: none; font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px; padding: 9px 18px; border-radius: 50px;
+    "
+  >&#128200; Video Analytics</a>
+
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
   <script>
@@ -60,6 +72,12 @@
         a { color: #f5c518; }
       `, { raw: true });
     }
+
+    // Reveal the Analytics link once the CMS UI (and its own top bar) has mounted.
+    (function () {
+      const link = document.getElementById('analyticsLink');
+      setTimeout(() => { if (link) link.style.display = 'flex'; }, 1200);
+    })();
 
     // Fade the branded splash out once Decap CMS has mounted its UI.
     (function () {
