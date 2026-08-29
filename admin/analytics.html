@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Video Analytics | Testimonies of Praise</title>
+  <link rel="icon" type="image/png" href="../images/Testimonies of Praise.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4B006E;
+      --accent: #f5c518;
+      --dark: #000000;
+      --glass: rgba(75, 0, 110, 0.85);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: var(--dark); color: #fff; min-height: 100vh; }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 5%; background: var(--glass); backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(245, 197, 24, 0.15);
+    }
+    header .brand { display: flex; align-items: center; gap: 12px; }
+    header img { height: 40px; }
+    header h1 { font-size: 0.95rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+    header a.back {
+      color: #fff; text-decoration: none; font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; border: 1px solid rgba(245, 197, 24, 0.4);
+      padding: 8px 18px; border-radius: 50px; transition: 0.3s;
+    }
+    header a.back:hover { background: var(--accent); color: var(--primary); border-color: var(--accent); }
+
+    main { max-width: 900px; margin: 0 auto; padding: 50px 5% 100px; }
+    .page-title { font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 8px; }
+    .page-subtitle { color: #aaa; font-size: 0.9rem; margin-bottom: 40px; }
+
+    .summary-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 40px; }
+    .summary-card {
+      flex: 1; min-width: 160px; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(245, 197, 24, 0.12); border-radius: 16px; padding: 20px;
+    }
+    .summary-card .num { font-size: 2rem; font-weight: 700; color: var(--accent); }
+    .summary-card .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-top: 4px; }
+
+    .toolbar { display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 16px; }
+    .btn {
+      background: transparent; border: 1px solid rgba(245, 197, 24, 0.4); color: var(--accent);
+      padding: 8px 18px; border-radius: 50px; font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; cursor: pointer; transition: 0.3s;
+    }
+    .btn:hover { background: var(--accent); color: var(--primary); }
+    .btn:disabled { opacity: 0.5; cursor: default; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
+      color: #999; padding: 0 16px 12px; border-bottom: 1px solid rgba(245, 197, 24, 0.15);
+    }
+    thead th.views-col, tbody td.views-col { text-align: right; }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tbody tr:hover { background: rgba(75, 0, 110, 0.2); }
+    tbody td { padding: 16px; font-size: 0.95rem; }
+    tbody td.views-col { font-weight: 700; color: var(--accent); font-size: 1.05rem; }
+    .rank { color: #666; font-size: 0.8rem; width: 24px; display: inline-block; }
+
+    .state { text-align: center; padding: 60px 0; color: #888; }
+    .mini-spinner {
+      width: 30px; height: 30px; border-radius: 50%; margin: 0 auto 16px;
+      border: 3px solid rgba(245, 197, 24, 0.25); border-top-color: var(--accent);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box {
+      background: rgba(200, 40, 40, 0.15); border: 1px solid rgba(220, 60, 60, 0.4);
+      color: #ffb3b3; padding: 16px 20px; border-radius: 12px; font-size: 0.85rem; margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <img src="../images/Testimonies of Praise.png" alt="Testimonies of Praise" />
+      <h1>Video Analytics</h1>
+    </div>
+    <a class="back" href="./">&larr; Content Manager</a>
+  </header>
+
+  <main>
+    <div class="page-title">Testifiers &amp; Recaps &mdash; Video Views</div>
+    <div class="page-subtitle">
+      Real play counts for videos in the homepage carousel. Not related to the live stream page.
+    </div>
+
+    <div id="errorBox"></div>
+
+    <div class="summary-row" id="summaryRow" style="display:none;">
+      <div class="summary-card">
+        <div class="num" id="totalViews">0</div>
+        <div class="label">Total Views</div>
+      </div>
+      <div class="summary-card">
+        <div class="num" id="totalVideos">0</div>
+        <div class="label">Videos Tracked</div>
+      </div>
+      <div class="summary-card">
+        <div class="num" id="topVideoViews">0</div>
+        <div class="label">Most Viewed</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn" id="refreshBtn">Refresh</button>
+    </div>
+
+    <div id="content">
+      <div class="state">
+        <div class="mini-spinner"></div>
+        <p>Loading view data&hellip;</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://huiytazoiiqrebugdbds.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1aXl0YXpvaWlxcmVidWdkYmRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMjIyODksImV4cCI6MjEwMzU5ODI4OX0.ttS6WDmfrv9I1VRNcRI7EGAmjjK9DRLM9_eiDuHcuz4';
+
+    const contentEl = document.getElementById('content');
+    const errorBox = document.getElementById('errorBox');
+    const summaryRow = document.getElementById('summaryRow');
+    const refreshBtn = document.getElementById('refreshBtn');
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str == null ? '' : String(str);
+      return div.innerHTML;
+    }
+
+    async function loadData() {
+      refreshBtn.disabled = true;
+      errorBox.innerHTML = '';
+      contentEl.innerHTML = '<div class="state"><div class="mini-spinner"></div><p>Loading view data&hellip;</p></div>';
+
+      try {
+        // 1. Current video list (source of truth for titles) from the CMS-managed JSON.
+        const videosRes = await fetch('../data/videos.json', { cache: 'no-store' });
+        const videosData = videosRes.ok ? await videosRes.json() : { videos: [] };
+        const videos = videosData.videos || [];
+
+        // 2. Recorded view counts from Supabase.
+        const viewsRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/video_views?select=video_url,title,views`,
+          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+        );
+        if (!viewsRes.ok) throw new Error(`Supabase returned ${viewsRes.status}`);
+        const viewRows = await viewsRes.json();
+
+        const viewsByUrl = {};
+        viewRows.forEach(row => { viewsByUrl[row.video_url] = row; });
+
+        // Merge: every currently-published video, even ones with 0 views yet.
+        const merged = videos.map(v => ({
+          title: v.title || '(untitled)',
+          url: v.url,
+          views: viewsByUrl[v.url] ? viewsByUrl[v.url].views : 0,
+        }));
+
+        // Include tracked videos that were later removed from videos.json,
+        // so historical view data isn't hidden.
+        viewRows.forEach(row => {
+          if (!videos.some(v => v.url === row.video_url)) {
+            merged.push({ title: (row.title || '(removed video)') + ' — no longer published', url: row.video_url, views: row.views });
+          }
+        });
+
+        merged.sort((a, b) => b.views - a.views);
+        renderTable(merged);
+      } catch (err) {
+        console.error(err);
+        errorBox.innerHTML = `<div class="error-box">Couldn't load view data: ${escapeHtml(err.message)}</div>`;
+        contentEl.innerHTML = '';
+        summaryRow.style.display = 'none';
+      } finally {
+        refreshBtn.disabled = false;
+      }
+    }
+
+    function renderTable(rows) {
+      if (!rows.length) {
+        summaryRow.style.display = 'none';
+        contentEl.innerHTML = '<div class="state"><p>No videos published yet in the Testifiers &amp; Recaps section.</p></div>';
+        return;
+      }
+
+      const totalViews = rows.reduce((sum, r) => sum + r.views, 0);
+      document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+      document.getElementById('totalVideos').textContent = rows.length;
+      document.getElementById('topVideoViews').textContent = rows[0].views.toLocaleString();
+      summaryRow.style.display = 'flex';
+
+      const bodyRows = rows.map((r, i) => `
+        <tr>
+          <td><span class="rank">#${i + 1}</span>${escapeHtml(r.title)}</td>
+          <td class="views-col">${r.views.toLocaleString()}</td>
+        </tr>
+      `).join('');
+
+      contentEl.innerHTML = `
+        <table>
+          <thead>
+            <tr><th>Video</th><th class="views-col">Views</th></tr>
+          </thead>
+          <tbody>${bodyRows}</tbody>
+        </table>
+      `;
+    }
+
+    refreshBtn.addEventListener('click', loadData);
+    loadData();
+  </script>
+</body>
+</html>
