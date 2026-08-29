@@ -1,5 +1,30 @@
 // ===== Testimonies of Praise - Homepage Script =====
 
+// --- View tracking config (Testifiers & Recaps videos only, not the live stream) ---
+const SUPABASE_URL = 'https://huiytazoiiqrebugdbds.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1aXl0YXpvaWlxcmVidWdkYmRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMjIyODksImV4cCI6MjEwMzU5ODI4OX0.ttS6WDmfrv9I1VRNcRI7EGAmjjK9DRLM9_eiDuHcuz4';
+
+// Records one view for a video the first time it's played in this browser
+// session. Fails silently (never blocks playback) if the network/API is
+// unavailable.
+function trackVideoView(video) {
+  if (!video || !video.url) return;
+
+  const sessionKey = 'top_viewed_' + video.url;
+  if (sessionStorage.getItem(sessionKey)) return; // already counted this session
+  sessionStorage.setItem(sessionKey, '1');
+
+  fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_video_view`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+    body: JSON.stringify({ p_video_url: video.url, p_title: video.title || '' }),
+  }).catch(err => console.warn('View tracking failed (non-blocking):', err));
+}
+
 const SETTINGS_DEFAULTS = {
   heroVideo: "https://res.cloudinary.com/duw6xrnpn/video/upload/v1777127537/TESTIMONIES_OF_PRAISE_FINAL_OPENING_MONTAGE_lq5wqk.mp4",
   heroSubtitle: "Experience high-definition storytelling, unfiltered testimonies, and immersive worship blasted directly to your device.",
@@ -107,6 +132,11 @@ async function initVideoCarousel() {
       768: { slidesPerView: 2, spaceBetween: 30 },
       1024: { slidesPerView: 3, spaceBetween: 40 }
     }
+  });
+
+  // Count a view the first time each video is actually played, not just rendered.
+  wrapper.querySelectorAll('.video-card video').forEach((el, i) => {
+    el.addEventListener('play', () => trackVideoView(videos[i]), { once: true });
   });
 }
 
