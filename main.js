@@ -140,16 +140,22 @@ async function initVideoCarousel() {
   });
 }
 
-// --- Silent testimony form submit ---
+// --- Testimony form submit with success/error animation ---
 function initTestimonyForm() {
   const form = document.getElementById('testimonyForm');
   const status = document.getElementById('formStatus');
+  const success = document.getElementById('formSuccess');
+  const container = form ? form.closest('.form-container') : null;
+  const submitBtn = document.getElementById('testimonySubmitBtn');
+  const submitAnotherBtn = document.getElementById('submitAnotherBtn');
   if (!form) return;
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     status.textContent = 'Submitting...';
     status.style.color = 'var(--accent)';
+    if (submitBtn) submitBtn.disabled = true;
+
     try {
       const response = await fetch(event.target.action, {
         method: form.method,
@@ -157,16 +163,37 @@ function initTestimonyForm() {
         headers: { Accept: 'application/json' }
       });
       if (response.ok) {
-        status.textContent = 'Praise the Lord! Your testimony has been submitted.';
-        status.style.color = '#4CAF50';
+        status.textContent = '';
+        form.style.display = 'none';
+        success.classList.add('show');
         form.reset();
       } else {
-        status.textContent = 'There was a problem submitting your form.';
+        status.textContent = 'There was a problem submitting your form. Please try again.';
+        status.style.color = '#ff6b6b';
+        if (container) {
+          container.classList.add('shake');
+          setTimeout(() => container.classList.remove('shake'), 500);
+        }
       }
     } catch (err) {
       status.textContent = 'Check your connection and try again.';
+      status.style.color = '#ff6b6b';
+      if (container) {
+        container.classList.add('shake');
+        setTimeout(() => container.classList.remove('shake'), 500);
+      }
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
+
+  if (submitAnotherBtn) {
+    submitAnotherBtn.addEventListener('click', () => {
+      success.classList.remove('show');
+      form.style.display = '';
+      status.textContent = '';
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
