@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Video Analytics | Testimonies of Praise</title>
+  <title>Admin Dashboard | Testimonies of Praise</title>
   <link rel="icon" type="image/png" href="../images/Testimonies of Praise.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -26,14 +26,16 @@
     header .brand { display: flex; align-items: center; gap: 12px; }
     header img { height: 40px; }
     header h1 { font-size: 0.95rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 700; }
-    header a.back {
+    header .header-actions { display: flex; gap: 10px; align-items: center; }
+    header a.back, header button.back {
       color: #fff; text-decoration: none; font-size: 0.75rem; font-weight: 600;
       text-transform: uppercase; border: 1px solid rgba(245, 197, 24, 0.4);
-      padding: 8px 18px; border-radius: 50px; transition: 0.3s;
+      padding: 8px 18px; border-radius: 50px; transition: 0.3s; background: transparent; cursor: pointer;
+      font-family: 'Poppins', sans-serif;
     }
-    header a.back:hover { background: var(--accent); color: var(--primary); border-color: var(--accent); }
+    header a.back:hover, header button.back:hover { background: var(--accent); color: var(--primary); border-color: var(--accent); }
 
-    main { max-width: 900px; margin: 0 auto; padding: 50px 5% 100px; }
+    main { max-width: 1000px; margin: 0 auto; padding: 50px 5% 100px; }
     .page-title { font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 8px; }
     .page-subtitle { color: #aaa; font-size: 0.9rem; margin-bottom: 40px; }
 
@@ -77,61 +79,137 @@
       background: rgba(200, 40, 40, 0.15); border: 1px solid rgba(220, 60, 60, 0.4);
       color: #ffb3b3; padding: 16px 20px; border-radius: 12px; font-size: 0.85rem; margin-bottom: 30px;
     }
+
+    /* ===== LOGIN SCREEN ===== */
+    #loginScreen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .login-card {
+      width: 100%; max-width: 380px; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(245, 197, 24, 0.15); border-radius: 24px; padding: 40px;
+      text-align: center;
+    }
+    .login-card img { height: 60px; margin-bottom: 16px; }
+    .login-card h2 { color: var(--accent); font-size: 1.2rem; letter-spacing: 1px; margin-bottom: 24px; }
+    .login-card input {
+      width: 100%; padding: 14px 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+      color: #fff; border-radius: 12px; margin-bottom: 14px; font-size: 15px; font-family: 'Poppins', sans-serif;
+    }
+    .login-card button {
+      width: 100%; background: var(--accent); color: var(--primary); padding: 14px; border: none;
+      font-weight: 800; border-radius: 12px; cursor: pointer; text-transform: uppercase; transition: 0.3s;
+      font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+    }
+    .login-card button:hover { opacity: 0.9; }
+    .login-card button:disabled { opacity: 0.5; cursor: default; }
+    #loginError {
+      color: #ffb3b3; font-size: 0.82rem; margin-top: 14px; min-height: 18px;
+    }
+
+    /* ===== TABS ===== */
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; }
+    .tab-btn {
+      background: none; border: none; color: rgba(255,255,255,0.6); font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 12px 18px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ===== SUBMISSION CARDS (Testimonies / Prayer Requests) ===== */
+    .sub-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 20px; margin-bottom: 14px;
+    }
+    .sub-card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+    .sub-card-name { font-weight: 700; color: var(--accent); font-size: 0.95rem; }
+    .sub-card-zone { color: rgba(255,255,255,0.5); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .sub-card-time { color: rgba(255,255,255,0.4); font-size: 0.75rem; }
+    .sub-card-body { color: #eee; font-size: 0.92rem; line-height: 1.6; white-space: pre-wrap; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand">
+  <!-- ===== LOGIN SCREEN ===== -->
+  <div id="loginScreen">
+    <div class="login-card">
       <img src="../images/Testimonies of Praise.png" alt="Testimonies of Praise" />
-      <h1>Video Analytics</h1>
+      <h2>Admin Sign In</h2>
+      <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Email" required autocomplete="username" />
+        <input type="password" id="loginPassword" placeholder="Password" required autocomplete="current-password" />
+        <button type="submit" id="loginBtn">Sign In</button>
+      </form>
+      <div id="loginError"></div>
     </div>
-    <a class="back" href="/admin/">&larr; Content Manager</a>
-  </header>
+  </div>
 
-  <main>
-    <div class="page-title">Testifiers &amp; Recaps &mdash; Video Views</div>
-    <div class="page-subtitle">
-      Real play counts for videos in the homepage carousel. Not related to the live stream page.
-    </div>
-
-    <div id="errorBox"></div>
-
-    <div class="summary-row" id="summaryRow" style="display:none;">
-      <div class="summary-card">
-        <div class="num" id="totalViews">0</div>
-        <div class="label">Total Views</div>
+  <!-- ===== DASHBOARD (shown after login) ===== -->
+  <div id="dashboardScreen" style="display:none;">
+    <header>
+      <div class="brand">
+        <img src="../images/Testimonies of Praise.png" alt="Testimonies of Praise" />
+        <h1>Admin Dashboard</h1>
       </div>
-      <div class="summary-card">
-        <div class="num" id="totalVideos">0</div>
-        <div class="label">Videos Tracked</div>
+      <div class="header-actions">
+        <a class="back" href="/admin/">&larr; Content Manager</a>
+        <button class="back" id="logoutBtn">Log Out</button>
       </div>
-      <div class="summary-card">
-        <div class="num" id="topVideoViews">0</div>
-        <div class="label">Most Viewed</div>
-      </div>
-    </div>
+    </header>
 
-    <div class="toolbar">
-      <button class="btn" id="refreshBtn">Refresh</button>
-    </div>
-
-    <div id="content">
-      <div class="state">
-        <div class="mini-spinner"></div>
-        <p>Loading view data&hellip;</p>
+    <main>
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="videos">Video Analytics</button>
+        <button class="tab-btn" data-tab="testimonies">Testimonies</button>
+        <button class="tab-btn" data-tab="prayers">Prayer Requests</button>
       </div>
-    </div>
-  </main>
+
+      <!-- ---- VIDEO ANALYTICS TAB ---- -->
+      <div class="tab-panel active" id="tab-videos">
+        <div class="page-title">Testifiers &amp; Recaps &mdash; Video Views</div>
+        <div class="page-subtitle">Real play counts for videos in the homepage carousel. Not related to the live stream page.</div>
+        <div id="videosErrorBox"></div>
+        <div class="summary-row" id="summaryRow" style="display:none;">
+          <div class="summary-card"><div class="num" id="totalViews">0</div><div class="label">Total Views</div></div>
+          <div class="summary-card"><div class="num" id="totalVideos">0</div><div class="label">Videos Tracked</div></div>
+          <div class="summary-card"><div class="num" id="topVideoViews">0</div><div class="label">Most Viewed</div></div>
+        </div>
+        <div class="toolbar"><button class="btn" id="videosRefreshBtn">Refresh</button></div>
+        <div id="videosContent">
+          <div class="state"><div class="mini-spinner"></div><p>Loading view data&hellip;</p></div>
+        </div>
+      </div>
+
+      <!-- ---- TESTIMONIES TAB ---- -->
+      <div class="tab-panel" id="tab-testimonies">
+        <div class="page-title">Submitted Testimonies</div>
+        <div class="page-subtitle">Everyone who's shared what God has done, newest first. Also emailed to you via Formspree.</div>
+        <div id="testimoniesErrorBox"></div>
+        <div class="toolbar"><button class="btn" id="testimoniesRefreshBtn">Refresh</button></div>
+        <div id="testimoniesContent">
+          <div class="state"><div class="mini-spinner"></div><p>Loading testimonies&hellip;</p></div>
+        </div>
+      </div>
+
+      <!-- ---- PRAYER REQUESTS TAB ---- -->
+      <div class="tab-panel" id="tab-prayers">
+        <div class="page-title">Prayer Requests</div>
+        <div class="page-subtitle">Submitted during live services, newest first. Private &mdash; visible only here.</div>
+        <div id="prayersErrorBox"></div>
+        <div class="toolbar"><button class="btn" id="prayersRefreshBtn">Refresh</button></div>
+        <div id="prayersContent">
+          <div class="state"><div class="mini-spinner"></div><p>Loading prayer requests&hellip;</p></div>
+        </div>
+      </div>
+    </main>
+  </div>
 
   <script>
     const SUPABASE_URL = 'https://huiytazoiiqrebugdbds.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1aXl0YXpvaWlxcmVidWdkYmRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMjIyODksImV4cCI6MjEwMzU5ODI4OX0.ttS6WDmfrv9I1VRNcRI7EGAmjjK9DRLM9_eiDuHcuz4';
-
-    const contentEl = document.getElementById('content');
-    const errorBox = document.getElementById('errorBox');
-    const summaryRow = document.getElementById('summaryRow');
-    const refreshBtn = document.getElementById('refreshBtn');
+    const SESSION_KEY = 'top_admin_session';
 
     function escapeHtml(str) {
       const div = document.createElement('div');
@@ -139,37 +217,129 @@
       return div.innerHTML;
     }
 
-    async function loadData() {
+    function timeAgo(iso) {
+      const seconds = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
+      if (seconds < 60) return seconds + 's ago';
+      const mins = Math.round(seconds / 60);
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.round(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      return new Date(iso).toLocaleDateString();
+    }
+
+    function getSession() {
+      try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null'); }
+      catch { return null; }
+    }
+    function setSession(session) { sessionStorage.setItem(SESSION_KEY, JSON.stringify(session)); }
+    function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
+
+    // Authenticated Supabase request. On a 401 (expired/invalid session),
+    // clears the session and shows the login screen again.
+    async function authFetch(path, options = {}) {
+      const session = getSession();
+      const token = session ? session.access_token : SUPABASE_ANON_KEY;
+      const res = await fetch(`${SUPABASE_URL}${path}`, {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 401) {
+        clearSession();
+        showLogin('Your session expired. Please sign in again.');
+        throw new Error('Session expired');
+      }
+      return res;
+    }
+
+    function showLogin(message) {
+      document.getElementById('dashboardScreen').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('loginError').textContent = message || '';
+    }
+
+    function showDashboard() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboardScreen').style.display = 'block';
+      loadVideos();
+      loadTestimonies();
+      loadPrayers();
+    }
+
+    // ===== LOGIN =====
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginBtn');
+      const errorEl = document.getElementById('loginError');
+      btn.disabled = true;
+      errorEl.textContent = '';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error_description || data.msg || 'Invalid email or password');
+        setSession({ access_token: data.access_token, refresh_token: data.refresh_token });
+        showDashboard();
+      } catch (err) {
+        errorEl.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      clearSession();
+      showLogin();
+    });
+
+    // ===== TABS =====
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ===== VIDEO ANALYTICS =====
+    async function loadVideos() {
+      const refreshBtn = document.getElementById('videosRefreshBtn');
+      const errorBox = document.getElementById('videosErrorBox');
+      const contentEl = document.getElementById('videosContent');
+      const summaryRow = document.getElementById('summaryRow');
+
       refreshBtn.disabled = true;
       errorBox.innerHTML = '';
       contentEl.innerHTML = '<div class="state"><div class="mini-spinner"></div><p>Loading view data&hellip;</p></div>';
 
       try {
-        // 1. Current video list (source of truth for titles) from the CMS-managed JSON.
         const videosRes = await fetch('../data/videos.json', { cache: 'no-store' });
         const videosData = videosRes.ok ? await videosRes.json() : { videos: [] };
         const videos = videosData.videos || [];
 
-        // 2. Recorded view counts from Supabase.
-        const viewsRes = await fetch(
-          `${SUPABASE_URL}/rest/v1/video_views?select=video_url,title,views`,
-          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
-        );
+        const viewsRes = await authFetch('/rest/v1/video_views?select=video_url,title,views');
         if (!viewsRes.ok) throw new Error(`Supabase returned ${viewsRes.status}`);
         const viewRows = await viewsRes.json();
 
         const viewsByUrl = {};
         viewRows.forEach(row => { viewsByUrl[row.video_url] = row; });
 
-        // Merge: every currently-published video, even ones with 0 views yet.
         const merged = videos.map(v => ({
           title: v.title || '(untitled)',
           url: v.url,
           views: viewsByUrl[v.url] ? viewsByUrl[v.url].views : 0,
         }));
 
-        // Include tracked videos that were later removed from videos.json,
-        // so historical view data isn't hidden.
         viewRows.forEach(row => {
           if (!videos.some(v => v.url === row.video_url)) {
             merged.push({ title: (row.title || '(removed video)') + ' — no longer published', url: row.video_url, views: row.views });
@@ -177,10 +347,12 @@
         });
 
         merged.sort((a, b) => b.views - a.views);
-        renderTable(merged);
+        renderVideosTable(merged);
       } catch (err) {
         console.error(err);
-        errorBox.innerHTML = `<div class="error-box">Couldn't load view data: ${escapeHtml(err.message)}</div>`;
+        if (err.message !== 'Session expired') {
+          errorBox.innerHTML = `<div class="error-box">Couldn't load view data: ${escapeHtml(err.message)}</div>`;
+        }
         contentEl.innerHTML = '';
         summaryRow.style.display = 'none';
       } finally {
@@ -188,7 +360,10 @@
       }
     }
 
-    function renderTable(rows) {
+    function renderVideosTable(rows) {
+      const contentEl = document.getElementById('videosContent');
+      const summaryRow = document.getElementById('summaryRow');
+
       if (!rows.length) {
         summaryRow.style.display = 'none';
         contentEl.innerHTML = '<div class="state"><p>No videos published yet in the Testifiers &amp; Recaps section.</p></div>';
@@ -210,16 +385,107 @@
 
       contentEl.innerHTML = `
         <table>
-          <thead>
-            <tr><th>Video</th><th class="views-col">Views</th></tr>
-          </thead>
+          <thead><tr><th>Video</th><th class="views-col">Views</th></tr></thead>
           <tbody>${bodyRows}</tbody>
         </table>
       `;
     }
 
-    refreshBtn.addEventListener('click', loadData);
-    loadData();
+    document.getElementById('videosRefreshBtn').addEventListener('click', loadVideos);
+
+    // ===== TESTIMONIES =====
+    async function loadTestimonies() {
+      const refreshBtn = document.getElementById('testimoniesRefreshBtn');
+      const errorBox = document.getElementById('testimoniesErrorBox');
+      const contentEl = document.getElementById('testimoniesContent');
+
+      refreshBtn.disabled = true;
+      errorBox.innerHTML = '';
+      contentEl.innerHTML = '<div class="state"><div class="mini-spinner"></div><p>Loading testimonies&hellip;</p></div>';
+
+      try {
+        const res = await authFetch('/rest/v1/testimonies?select=id,full_name,zone,message,created_at&order=created_at.desc&limit=200');
+        if (!res.ok) throw new Error(`Supabase returned ${res.status}`);
+        const rows = await res.json();
+
+        if (!rows.length) {
+          contentEl.innerHTML = '<div class="state"><p>No testimonies submitted yet.</p></div>';
+          return;
+        }
+
+        contentEl.innerHTML = rows.map(r => `
+          <div class="sub-card">
+            <div class="sub-card-head">
+              <span class="sub-card-name">${escapeHtml(r.full_name)}${r.zone ? ' &middot; ' : ''}<span class="sub-card-zone">${escapeHtml(r.zone)}</span></span>
+              <span class="sub-card-time">${timeAgo(r.created_at)}</span>
+            </div>
+            <div class="sub-card-body">${escapeHtml(r.message)}</div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+        if (err.message !== 'Session expired') {
+          errorBox.innerHTML = `<div class="error-box">Couldn't load testimonies: ${escapeHtml(err.message)}</div>`;
+        }
+        contentEl.innerHTML = '';
+      } finally {
+        refreshBtn.disabled = false;
+      }
+    }
+
+    document.getElementById('testimoniesRefreshBtn').addEventListener('click', loadTestimonies);
+
+    // ===== PRAYER REQUESTS =====
+    async function loadPrayers() {
+      const refreshBtn = document.getElementById('prayersRefreshBtn');
+      const errorBox = document.getElementById('prayersErrorBox');
+      const contentEl = document.getElementById('prayersContent');
+
+      refreshBtn.disabled = true;
+      errorBox.innerHTML = '';
+      contentEl.innerHTML = '<div class="state"><div class="mini-spinner"></div><p>Loading prayer requests&hellip;</p></div>';
+
+      try {
+        const res = await authFetch('/rest/v1/prayer_requests?select=id,name,request,created_at&order=created_at.desc&limit=200');
+        if (!res.ok) throw new Error(`Supabase returned ${res.status}`);
+        const rows = await res.json();
+
+        if (!rows.length) {
+          contentEl.innerHTML = '<div class="state"><p>No prayer requests submitted yet.</p></div>';
+          return;
+        }
+
+        contentEl.innerHTML = rows.map(r => `
+          <div class="sub-card">
+            <div class="sub-card-head">
+              <span class="sub-card-name">${escapeHtml(r.name)}</span>
+              <span class="sub-card-time">${timeAgo(r.created_at)}</span>
+            </div>
+            <div class="sub-card-body">${escapeHtml(r.request)}</div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+        if (err.message !== 'Session expired') {
+          errorBox.innerHTML = `<div class="error-box">Couldn't load prayer requests: ${escapeHtml(err.message)}</div>`;
+        }
+        contentEl.innerHTML = '';
+      } finally {
+        refreshBtn.disabled = false;
+      }
+    }
+
+    document.getElementById('prayersRefreshBtn').addEventListener('click', loadPrayers);
+
+    // ===== INIT =====
+    (function init() {
+      const session = getSession();
+      if (session && session.access_token) {
+        showDashboard();
+      } else {
+        showLogin();
+      }
+    })();
   </script>
 </body>
 </html>
