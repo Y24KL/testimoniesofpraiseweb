@@ -360,9 +360,12 @@
     const infoHeading = document.getElementById('infoHeading');
     const infoDescription = document.getElementById('infoDescription');
 
+    let currentStreamTitle = DEFAULT_STREAM.heading;
+
     function showLive() {
       liveStatus.style.display = 'flex';
       offlineState.style.display = 'none';
+      trackStreamJoin();
     }
 
     function showOffline() {
@@ -436,6 +439,7 @@
       }
 
       if (config.poster) video.setAttribute('poster', config.poster);
+      if (config.heading) currentStreamTitle = config.heading;
       if (infoHeading && config.heading) infoHeading.textContent = config.heading;
       if (infoDescription && config.description) infoDescription.textContent = config.description;
 
@@ -466,6 +470,68 @@
     // ===== SUPABASE: LIVE CHAT + PRAYER REQUESTS =====
     const SUPABASE_URL = 'https://huiytazoiiqrebugdbds.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1aXl0YXpvaWlxcmVidWdkYmRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMjIyODksImV4cCI6MjEwMzU5ODI4OX0.ttS6WDmfrv9I1VRNcRI7EGAmjjK9DRLM9_eiDuHcuz4';
+
+    // ===== LIVE STREAM VIEWER TRACKING =====
+    // Accurate per-stream data (not the stream host's own platform numbers):
+    // opens/reuses a "session" for the current stream title, registers this
+    // viewer, and sends a heartbeat every 20s while the tab stays open, so
+    // the admin dashboard can show who's currently watching. Entirely
+    // best-effort — never blocks playback if Supabase is unreachable.
+    let topViewerId = null;
+    let topHeartbeatTimer = null;
+    let topStreamTracked = false;
+
+    function topRpc(fn, body) {
+      return fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify(body),
+      }).then(async res => {
+        if (!res.ok) throw new Error(`Supabase RPC ${fn} failed: ${res.status}`);
+        const text = await res.text();
+        return text ? JSON.parse(text) : null;
+      });
+    }
+
+    async function trackStreamJoin() {
+      if (topStreamTracked) return;
+      topStreamTracked = true;
+
+      try {
+        const name = localStorage.getItem('top_chat_name') || null;
+        const sessionId = await topRpc('get_or_create_stream_session', { p_title: currentStreamTitle || 'Live Stream' });
+        const viewerId = await topRpc('join_stream_session', { p_session_id: sessionId, p_name: name, p_group_size: 1 });
+        topViewerId = viewerId;
+
+        topHeartbeatTimer = setInterval(() => {
+          if (topViewerId != null) topRpc('heartbeat_stream_viewer', { p_viewer_id: topViewerId }).catch(() => {});
+        }, 20000);
+
+        const sendLeave = () => {
+          if (topViewerId == null) return;
+          fetch(`${SUPABASE_URL}/rest/v1/rpc/leave_stream_session`, {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({ p_viewer_id: topViewerId }),
+          }).catch(() => {});
+        };
+        window.addEventListener('pagehide', sendLeave);
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden') sendLeave();
+        });
+      } catch (err) {
+        console.warn('Stream view tracking unavailable (non-blocking):', err);
+      }
+    }
 
     function escapeHtml(str) {
       const div = document.createElement('div');
