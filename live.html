@@ -322,7 +322,7 @@
         <h2>Need Prayer?</h2>
         <p>Submit a request during the service — our prayer team will lift it up.</p>
         <form id="prayerForm">
-          <input type="text" id="prayerName" placeholder="Your Name (Optional)" maxlength="80">
+          <input type="text" id="prayerName" placeholder="Your Name" maxlength="80" required>
           <textarea id="prayerRequest" placeholder="What would you like prayer for?" rows="4" required minlength="5" maxlength="500"></textarea>
           <button type="submit" id="prayerSubmitBtn">Submit Prayer Request</button>
         </form>
@@ -580,7 +580,8 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const request = requestInput.value.trim();
-        if (request.length < 5) return;
+        const name = nameInput.value.trim();
+        if (!name || request.length < 5) return;
 
         submitBtn.disabled = true;
         status.textContent = 'Submitting...';
@@ -595,7 +596,7 @@
               Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
               Prefer: 'return=minimal',
             },
-            body: JSON.stringify({ name: nameInput.value.trim() || null, request }),
+            body: JSON.stringify({ name, request }),
           });
           if (res.ok) {
             status.textContent = '';
