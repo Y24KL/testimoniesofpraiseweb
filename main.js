@@ -166,6 +166,25 @@ function initTestimonyForm() {
         status.textContent = '';
         form.style.display = 'none';
         success.classList.add('show');
+
+        // Best-effort mirror into Supabase so it shows up in the admin
+        // dashboard. Formspree above is the source of truth for the
+        // success/error message the user sees; this never blocks that.
+        fetch(`${SUPABASE_URL}/rest/v1/testimonies`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({
+            full_name: (form.elements['Full Name'] || {}).value || '',
+            zone: (form.elements['Zone'] || {}).value || '',
+            message: (form.elements['Testimony'] || {}).value || '',
+          }),
+        }).catch(err => console.warn('Testimony mirror to Supabase failed (non-blocking):', err));
+
         form.reset();
       } else {
         status.textContent = 'There was a problem submitting your form. Please try again.';
