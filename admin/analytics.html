@@ -162,6 +162,7 @@
     <main>
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="videos">Video Analytics</button>
+        <button class="tab-btn" data-tab="stream">Live Stream</button>
         <button class="tab-btn" data-tab="testimonies">Testimonies</button>
         <button class="tab-btn" data-tab="prayers">Prayer Requests</button>
       </div>
@@ -180,6 +181,26 @@
         <div id="videosContent">
           <div class="state"><div class="mini-spinner"></div><p>Loading view data&hellip;</p></div>
         </div>
+      </div>
+
+      <!-- ---- LIVE STREAM TAB ---- -->
+      <div class="tab-panel" id="tab-stream">
+        <div class="page-title">Live Stream Analytics</div>
+        <div class="page-subtitle">Accurate per-stream viewer data from the live page itself, not the stream host's own platform. Refresh right before going live to check the latest numbers.</div>
+        <div id="streamErrorBox"></div>
+        <div class="summary-row" id="streamSummaryRow" style="display:none;">
+          <div class="summary-card"><div class="num" id="streamCurrentlyWatching">0</div><div class="label">Currently Watching</div></div>
+          <div class="summary-card"><div class="num" id="streamTotalJoined">0</div><div class="label">Total Joined This Stream</div></div>
+          <div class="summary-card"><div class="num" id="streamSessionTitleNum" style="font-size:1.1rem;">&mdash;</div><div class="label">Current / Last Session</div></div>
+        </div>
+        <div class="toolbar"><button class="btn" id="streamRefreshBtn">Refresh</button></div>
+        <div id="streamContent">
+          <div class="state"><div class="mini-spinner"></div><p>Loading stream data&hellip;</p></div>
+        </div>
+        <details style="margin-top:24px;">
+          <summary style="cursor:pointer;color:rgba(255,255,255,.7);font-size:.85rem;">Past sessions</summary>
+          <div id="streamPastSessions" style="margin-top:14px;"></div>
+        </details>
       </div>
 
       <!-- ---- TESTIMONIES TAB ---- -->
@@ -265,6 +286,7 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('dashboardScreen').style.display = 'block';
       loadVideos();
+      loadStream();
       loadTestimonies();
       loadPrayers();
     }
@@ -392,6 +414,91 @@
     }
 
     document.getElementById('videosRefreshBtn').addEventListener('click', loadVideos);
+
+    // ===== LIVE STREAM ANALYTICS =====
+    const STREAM_ACTIVE_WINDOW_MS = 45 * 1000; // heartbeats fire every 20s
+
+    async function loadStream() {
+      const refreshBtn = document.getElementById('streamRefreshBtn');
+      const errorBox = document.getElementById('streamErrorBox');
+      const contentEl = document.getElementById('streamContent');
+      const summaryRow = document.getElementById('streamSummaryRow');
+      const pastEl = document.getElementById('streamPastSessions');
+
+      refreshBtn.disabled = true;
+      errorBox.innerHTML = '';
+      contentEl.innerHTML = '<div class="state"><div class="mini-spinner"></div><p>Loading stream data&hellip;</p></div>';
+
+      try {
+        const sessionsRes = await authFetch('/rest/v1/stream_sessions?select=*&order=started_at.desc&limit=11');
+        if (!sessionsRes.ok) throw new Error(`Supabase returned ${sessionsRes.status}`);
+        const sessions = await sessionsRes.json();
+
+        if (!sessions.length) {
+          summaryRow.style.display = 'none';
+          contentEl.innerHTML = '<div class="state"><p>No stream sessions tracked yet. Analytics appear once someone opens the live page during a stream.</p></div>';
+          pastEl.innerHTML = '';
+          return;
+        }
+
+        const current = sessions[0];
+        const past = sessions.slice(1);
+        const isOpen = !current.ended_at;
+
+        const viewersRes = await authFetch(`/rest/v1/stream_viewers?select=id,name,group_size,joined_at,last_seen,left_at&session_id=eq.${current.id}&order=joined_at.desc`);
+        if (!viewersRes.ok) throw new Error(`Supabase returned ${viewersRes.status}`);
+        const viewers = await viewersRes.json();
+
+        const totalJoined = viewers.reduce((sum, v) => sum + (v.group_size || 1), 0);
+        const now = Date.now();
+        const currentlyWatching = viewers.reduce((sum, v) => {
+          const active = !v.left_at && (now - new Date(v.last_seen).getTime()) < STREAM_ACTIVE_WINDOW_MS;
+          return active ? sum + (v.group_size || 1) : sum;
+        }, 0);
+
+        document.getElementById('streamCurrentlyWatching').textContent = isOpen ? currentlyWatching.toLocaleString() : '0';
+        document.getElementById('streamTotalJoined').textContent = totalJoined.toLocaleString();
+        document.getElementById('streamSessionTitleNum').textContent = current.title + (isOpen ? '' : ' (ended)');
+        summaryRow.style.display = 'flex';
+
+        if (!viewers.length) {
+          contentEl.innerHTML = '<div class="state"><p>No viewers recorded for this session yet.</p></div>';
+        } else {
+          const rows = viewers.slice(0, 30).map(v => {
+            const active = !v.left_at && (now - new Date(v.last_seen).getTime()) < STREAM_ACTIVE_WINDOW_MS;
+            const dot = active
+              ? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#7CF3B4;margin-right:8px;"></span>'
+              : '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.25);margin-right:8px;"></span>';
+            return `
+              <div class="sub-card" style="padding:12px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+                <span>${dot}${escapeHtml(v.name || 'Anonymous')}</span>
+                <span class="sub-card-time">joined ${timeAgo(v.joined_at)}</span>
+              </div>`;
+          }).join('');
+          contentEl.innerHTML = `<div style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:10px;">Showing up to 30 most recent joins for this session</div>${rows}`;
+        }
+
+        pastEl.innerHTML = past.length
+          ? past.map(s => {
+              const span = s.ended_at
+                ? `${new Date(s.started_at).toLocaleString()} &rarr; ${new Date(s.ended_at).toLocaleString()}`
+                : `${new Date(s.started_at).toLocaleString()} (still open)`;
+              return `<div class="sub-card" style="padding:12px 18px;margin-bottom:8px;"><strong>${escapeHtml(s.title)}</strong> &mdash; ${span}</div>`;
+            }).join('')
+          : '<p style="color:rgba(255,255,255,.5);font-size:.85rem;">No earlier sessions yet.</p>';
+      } catch (err) {
+        console.error(err);
+        if (err.message !== 'Session expired') {
+          errorBox.innerHTML = `<div class="error-box">Couldn't load stream data: ${escapeHtml(err.message)}</div>`;
+        }
+        contentEl.innerHTML = '';
+        summaryRow.style.display = 'none';
+      } finally {
+        refreshBtn.disabled = false;
+      }
+    }
+
+    document.getElementById('streamRefreshBtn').addEventListener('click', loadStream);
 
     // ===== TESTIMONIES =====
     async function loadTestimonies() {
