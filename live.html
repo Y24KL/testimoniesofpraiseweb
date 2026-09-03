@@ -168,6 +168,102 @@
       .video-wrapper { border-radius: 0; border: none; }
       .main-content { padding: 1rem; margin-top: 80px; }
     }
+
+    /* ===== STREAM LAYOUT (video + chat) ===== */
+    .stream-layout {
+      width: 100%; max-width: 1300px; display: flex; gap: 24px; align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .video-column { flex: 2 1 600px; min-width: 0; }
+
+    /* ===== LIVE CHAT ===== */
+    .chat-column {
+      flex: 1 1 300px; max-width: 380px; min-width: 280px;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(245, 197, 24, 0.15);
+      border-radius: 20px; display: flex; flex-direction: column;
+      height: 560px; overflow: hidden;
+    }
+    .chat-header {
+      padding: 16px 20px; border-bottom: 1px solid rgba(245, 197, 24, 0.15);
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .chat-empty { color: #777; font-size: 0.85rem; text-align: center; margin-top: 20px; }
+    .chat-msg { animation: fadeInUp 0.3s ease-out; }
+    .chat-msg .chat-msg-name { color: var(--accent); font-weight: 700; font-size: 0.8rem; margin-right: 6px; }
+    .chat-msg .chat-msg-text { color: #eee; font-size: 0.9rem; word-break: break-word; }
+    .chat-msg .chat-msg-time { color: #666; font-size: 0.65rem; margin-left: 6px; }
+
+    .chat-form { padding: 14px; border-top: 1px solid rgba(245, 197, 24, 0.15); }
+    .chat-form input {
+      width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+      color: #fff; border-radius: 10px; padding: 10px 12px; font-size: 0.85rem; margin-bottom: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .chat-input-row { display: flex; gap: 8px; margin-bottom: 0; }
+    .chat-input-row input { margin-bottom: 0; flex: 1; }
+    .chat-input-row button {
+      background: var(--accent); color: var(--primary); border: none; border-radius: 10px;
+      padding: 0 18px; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.3s;
+    }
+    .chat-input-row button:hover { opacity: 0.85; }
+    .chat-input-row button:disabled { opacity: 0.5; cursor: default; }
+
+    @media (max-width: 900px) {
+      .chat-column { max-width: 100%; height: 400px; }
+    }
+
+    /* ===== PRAYER REQUESTS ===== */
+    .prayer-section { width: 100%; max-width: 1300px; margin-top: 40px; }
+    .prayer-container {
+      background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); padding: 40px;
+      max-width: 600px; margin: 0 auto; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center; transition: transform 0.1s;
+    }
+    .prayer-container.shake { animation: shake 0.5s; }
+    .prayer-container h2 { color: var(--accent); margin-bottom: 8px; }
+    .prayer-container > p { color: #aaa; font-size: 0.9rem; margin-bottom: 24px; }
+    .prayer-container input, .prayer-container textarea {
+      width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff; border-radius: 14px; margin-bottom: 16px; font-size: 15px; font-family: 'Poppins', sans-serif;
+      resize: vertical;
+    }
+    .prayer-container button[type="submit"] {
+      width: 100%; background: var(--accent); color: var(--primary); padding: 16px; border: none;
+      font-weight: 800; border-radius: 14px; cursor: pointer; text-transform: uppercase; transition: 0.3s;
+    }
+    .prayer-container button[type="submit"]:hover { opacity: 0.9; }
+    .prayer-container button[type="submit"]:disabled { opacity: 0.5; cursor: default; }
+    #prayerStatus { margin-top: 12px; font-weight: 600; font-size: 0.9rem; }
+
+    @keyframes shake {
+      10%, 90% { transform: translateX(-2px); }
+      20%, 80% { transform: translateX(4px); }
+      30%, 50%, 70% { transform: translateX(-8px); }
+      40%, 60% { transform: translateX(8px); }
+    }
+
+    /* ===== SHARED FORM SUCCESS ANIMATION ===== */
+    .form-success {
+      display: none; flex-direction: column; align-items: center; text-align: center; padding: 20px 10px 0;
+    }
+    .form-success.show { display: flex; animation: fadeInUp 0.5s ease-out; }
+    .form-success p { color: #7CF3B4; font-weight: 600; font-size: 1rem; margin-top: 10px; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .checkmark { width: 60px; height: 60px; }
+    .checkmark-circle {
+      stroke: #7CF3B4; stroke-width: 3; stroke-miterlimit: 10;
+      stroke-dasharray: 166; stroke-dashoffset: 166;
+      animation: circleDraw 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+    .checkmark-check {
+      stroke: #7CF3B4; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 48; stroke-dashoffset: 48;
+      animation: checkDraw 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+    }
+    @keyframes circleDraw { to { stroke-dashoffset: 0; } }
+    @keyframes checkDraw { to { stroke-dashoffset: 0; } }
   </style>
 </head>
 <body>
@@ -186,21 +282,63 @@
   </header>
 
   <div class="main-content">
-    <div class="video-wrapper">
-      <video id="livePlayer" controls autoplay playsinline poster="images/live-poster.jpg"></video>
-      <div id="youtubePlayer"></div>
+    <div class="stream-layout">
+      <div class="video-column">
+        <div class="video-wrapper">
+          <video id="livePlayer" controls autoplay playsinline poster="images/live-poster.jpg"></video>
+          <div id="youtubePlayer"></div>
+        </div>
+
+        <div id="offlineState" class="offline-card">
+          <p>We're not live right now</p>
+          <span>Check back soon — testimonies are on the way!</span>
+        </div>
+
+        <div class="live-info">
+          <h2 id="infoHeading">Testimonies of Praise Live</h2>
+          <p id="infoDescription">Join thousands across the globe as we celebrate the triumphs of faith. Your miracle is next!</p>
+        </div>
+      </div>
+
+      <aside class="chat-column">
+        <div class="chat-header">
+          <span>Live Chat</span>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-empty" id="chatEmpty">Be the first to say something 🙌</div>
+        </div>
+        <form class="chat-form" id="chatForm">
+          <input type="text" id="chatName" placeholder="Your name (optional)" maxlength="40">
+          <div class="chat-input-row">
+            <input type="text" id="chatMessageInput" placeholder="Say something..." maxlength="300" required>
+            <button type="submit" id="chatSendBtn">Send</button>
+          </div>
+        </form>
+      </aside>
     </div>
 
-    <div id="offlineState" class="offline-card">
-      <p>We're not live right now</p>
-      <span>Check back soon — testimonies are on the way!</span>
-    </div>
+    <section class="prayer-section">
+      <div class="prayer-container">
+        <h2>Need Prayer?</h2>
+        <p>Submit a request during the service — our prayer team will lift it up.</p>
+        <form id="prayerForm">
+          <input type="text" id="prayerName" placeholder="Your Name (Optional)" maxlength="80">
+          <textarea id="prayerRequest" placeholder="What would you like prayer for?" rows="4" required minlength="5" maxlength="500"></textarea>
+          <button type="submit" id="prayerSubmitBtn">Submit Prayer Request</button>
+        </form>
+        <p id="prayerStatus"></p>
+        <div id="prayerSuccess" class="form-success">
+          <svg class="checkmark" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+          <p>Your prayer request has been received 🙏</p>
+          <button type="button" id="prayerAnotherBtn" class="back-btn" style="border:none;">Submit Another</button>
+        </div>
+      </div>
+    </section>
 
-    <div class="live-info">
-      <h2 id="infoHeading">Testimonies of Praise Live</h2>
-      <p id="infoDescription">Join thousands across the globe as we celebrate the triumphs of faith. Your miracle is next!</p>
-      <a href="index.html" class="back-btn">Return Home</a>
-    </div>
+    <a href="index.html" class="back-btn">Return Home</a>
   </div>
 
   <script>
@@ -324,6 +462,169 @@
     // Hide loader when page is ready, or after 4 seconds maximum
     window.addEventListener('load', () => setTimeout(hideLoader, 1000));
     setTimeout(hideLoader, 4000);
+
+    // ===== SUPABASE: LIVE CHAT + PRAYER REQUESTS =====
+    const SUPABASE_URL = 'https://huiytazoiiqrebugdbds.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1aXl0YXpvaWlxcmVidWdkYmRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMjIyODksImV4cCI6MjEwMzU5ODI4OX0.ttS6WDmfrv9I1VRNcRI7EGAmjjK9DRLM9_eiDuHcuz4';
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str == null ? '' : String(str);
+      return div.innerHTML;
+    }
+
+    // --- Live Chat ---
+    (function initChat() {
+      const messagesEl = document.getElementById('chatMessages');
+      const emptyEl = document.getElementById('chatEmpty');
+      const form = document.getElementById('chatForm');
+      const nameInput = document.getElementById('chatName');
+      const msgInput = document.getElementById('chatMessageInput');
+      const sendBtn = document.getElementById('chatSendBtn');
+      if (!form) return;
+
+      const savedName = localStorage.getItem('top_chat_name');
+      if (savedName) nameInput.value = savedName;
+
+      let lastId = 0;
+      let userScrolledUp = false;
+
+      messagesEl.addEventListener('scroll', () => {
+        const nearBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 60;
+        userScrolledUp = !nearBottom;
+      });
+
+      function renderMessages(rows, { replace } = {}) {
+        if (!rows.length && replace) {
+          emptyEl.style.display = 'block';
+          return;
+        }
+        if (rows.length) emptyEl.style.display = 'none';
+
+        rows.forEach(row => {
+          const div = document.createElement('div');
+          div.className = 'chat-msg';
+          const time = new Date(row.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          div.innerHTML = `<span class="chat-msg-name">${escapeHtml(row.name || 'Anonymous')}</span><span class="chat-msg-text">${escapeHtml(row.message)}</span><span class="chat-msg-time">${time}</span>`;
+          messagesEl.appendChild(div);
+          lastId = Math.max(lastId, row.id);
+        });
+
+        if (!userScrolledUp) messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      async function pollChat() {
+        try {
+          const url = lastId
+            ? `${SUPABASE_URL}/rest/v1/chat_messages?select=id,name,message,created_at&id=gt.${lastId}&order=id.asc`
+            : `${SUPABASE_URL}/rest/v1/chat_messages?select=id,name,message,created_at&order=id.desc&limit=30`;
+          const res = await fetch(url, {
+            headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+          });
+          if (!res.ok) return;
+          let rows = await res.json();
+          if (!lastId) rows = rows.reverse(); // initial batch comes back newest-first
+          renderMessages(rows, { replace: !lastId });
+        } catch (err) {
+          console.warn('Chat polling failed (non-blocking):', err);
+        }
+      }
+
+      pollChat();
+      setInterval(pollChat, 4000);
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = msgInput.value.trim();
+        if (!message) return;
+        const name = nameInput.value.trim();
+        if (name) localStorage.setItem('top_chat_name', name);
+
+        sendBtn.disabled = true;
+        try {
+          const res = await fetch(`${SUPABASE_URL}/rest/v1/chat_messages`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify({ name: name || null, message }),
+          });
+          if (res.ok) {
+            msgInput.value = '';
+            userScrolledUp = false;
+            pollChat();
+          }
+        } catch (err) {
+          console.warn('Sending chat message failed:', err);
+        } finally {
+          setTimeout(() => { sendBtn.disabled = false; }, 1500); // light throttle
+        }
+      });
+    })();
+
+    // --- Prayer Requests ---
+    (function initPrayerForm() {
+      const form = document.getElementById('prayerForm');
+      const nameInput = document.getElementById('prayerName');
+      const requestInput = document.getElementById('prayerRequest');
+      const submitBtn = document.getElementById('prayerSubmitBtn');
+      const status = document.getElementById('prayerStatus');
+      const success = document.getElementById('prayerSuccess');
+      const container = form ? form.closest('.prayer-container') : null;
+      const anotherBtn = document.getElementById('prayerAnotherBtn');
+      if (!form) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const request = requestInput.value.trim();
+        if (request.length < 5) return;
+
+        submitBtn.disabled = true;
+        status.textContent = 'Submitting...';
+        status.style.color = 'var(--accent)';
+
+        try {
+          const res = await fetch(`${SUPABASE_URL}/rest/v1/prayer_requests`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify({ name: nameInput.value.trim() || null, request }),
+          });
+          if (res.ok) {
+            status.textContent = '';
+            form.style.display = 'none';
+            success.classList.add('show');
+            form.reset();
+          } else {
+            throw new Error('Request failed');
+          }
+        } catch (err) {
+          status.textContent = 'Something went wrong. Please try again.';
+          status.style.color = '#ff6b6b';
+          if (container) {
+            container.classList.add('shake');
+            setTimeout(() => container.classList.remove('shake'), 500);
+          }
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+      if (anotherBtn) {
+        anotherBtn.addEventListener('click', () => {
+          success.classList.remove('show');
+          form.style.display = '';
+          status.textContent = '';
+        });
+      }
+    })();
   </script>
 
 </body>
