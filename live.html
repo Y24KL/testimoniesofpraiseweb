@@ -308,7 +308,7 @@
           <div class="chat-empty" id="chatEmpty">Be the first to say something 🙌</div>
         </div>
         <form class="chat-form" id="chatForm">
-          <input type="text" id="chatName" placeholder="Your name (optional)" maxlength="40">
+          <input type="text" id="chatName" placeholder="Your name" maxlength="40" required>
           <div class="chat-input-row">
             <input type="text" id="chatMessageInput" placeholder="Say something..." maxlength="300" required>
             <button type="submit" id="chatSendBtn">Send</button>
@@ -536,9 +536,9 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const message = msgInput.value.trim();
-        if (!message) return;
         const name = nameInput.value.trim();
-        if (name) localStorage.setItem('top_chat_name', name);
+        if (!message || !name) return;
+        localStorage.setItem('top_chat_name', name);
 
         sendBtn.disabled = true;
         try {
@@ -550,7 +550,7 @@
               Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
               Prefer: 'return=minimal',
             },
-            body: JSON.stringify({ name: name || null, message }),
+            body: JSON.stringify({ name, message }),
           });
           if (res.ok) {
             msgInput.value = '';
