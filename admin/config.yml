@@ -43,9 +43,11 @@ collections:
         file: "data/stream.json"
         format: json
         fields:
+          - {label: "Currently Live", name: "status", widget: boolean, default: false, hint: "Turn this on right before you go live, and off when the service ends. This is what actually controls whether visitors see the stream or the offline screen — nothing plays until this is switched on."}
           - {label: "YouTube Video ID", name: "youtubeVideoId", widget: string, required: false, hint: "Paste just the video ID from your live YouTube stream (the part after v= in the URL, e.g. dQw4w9WgXcQ). When set, this is what visitors see, and it counts toward your channel's views. Leave blank to fall back to the CDN stream below."}
           - {label: "Stream URL (.m3u8, fallback)", name: "streamUrl", widget: string, hint: "Only used when no YouTube Video ID is set above."}
           - {label: "Poster Image", name: "poster", widget: image, required: false}
+          - {label: "Offline Background Video URL", name: "offlineVideoUrl", widget: string, required: false, hint: "A video (e.g. a Cloudinary .mp4 link) that plays quietly in the background of the player while you're offline. Leave blank for a plain dark background."}
           - {label: "Live Info Heading", name: "heading", widget: string, default: "Testimonies of Praise Live"}
           - {label: "Live Info Description", name: "description", widget: text}
 
