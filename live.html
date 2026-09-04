@@ -148,6 +148,13 @@
     }
     .offline-overlay-text p { color: var(--accent); font-weight: 700; letter-spacing: 1px; margin: 0; font-size: 1.05rem; }
     .offline-overlay-text span { color: #ddd; font-size: 0.85rem; }
+    .unmute-btn {
+      position: absolute; bottom: 16px; right: 16px; z-index: 2;
+      background: rgba(0,0,0,0.6); color: var(--accent); border: 1px solid rgba(245, 197, 24, 0.5);
+      padding: 8px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+      font-family: 'Poppins', sans-serif; transition: 0.2s;
+    }
+    .unmute-btn:hover { background: var(--accent); color: var(--primary); }
 
     .back-btn {
       margin-top: 2rem;
@@ -290,7 +297,8 @@
           <div id="youtubePlayer"></div>
 
           <div id="offlineState" class="offline-overlay">
-            <video id="offlineVideo" muted loop autoplay playsinline></video>
+            <video id="offlineVideo" loop autoplay playsinline></video>
+            <button id="offlineUnmuteBtn" class="unmute-btn" type="button" style="display:none;">&#128264; Tap for sound</button>
             <div class="offline-overlay-text" id="offlineOverlayText">
               <p>We're not live right now</p>
               <span>Check back soon — testimonies are on the way!</span>
@@ -365,6 +373,7 @@
     const offlineState = document.getElementById('offlineState');
     const offlineVideo = document.getElementById('offlineVideo');
     const offlineOverlayText = document.getElementById('offlineOverlayText');
+    const offlineUnmuteBtn = document.getElementById('offlineUnmuteBtn');
     const infoHeading = document.getElementById('infoHeading');
     const infoDescription = document.getElementById('infoDescription');
 
@@ -436,6 +445,12 @@
       }
     }
 
+    offlineUnmuteBtn.addEventListener('click', () => {
+      offlineVideo.muted = false;
+      offlineVideo.play().catch(() => {});
+      offlineUnmuteBtn.style.display = 'none';
+    });
+
     // --- Load stream settings from the CMS (data/stream.json) ---
     (async function init() {
       let config = DEFAULT_STREAM;
@@ -455,6 +470,19 @@
         offlineVideo.src = config.offlineVideoUrl;
         offlineVideo.style.display = 'block';
         offlineOverlayText.style.display = 'none';
+        offlineUnmuteBtn.style.display = 'none';
+        offlineVideo.muted = false;
+
+        const playAttempt = offlineVideo.play();
+        if (playAttempt !== undefined) {
+          playAttempt.catch(() => {
+            // Browser blocked autoplay with sound — fall back to muted
+            // playback and let the visitor turn sound on with one tap.
+            offlineVideo.muted = true;
+            offlineVideo.play().catch(() => {});
+            offlineUnmuteBtn.style.display = 'block';
+          });
+        }
       } else {
         offlineVideo.style.display = 'none';
         offlineOverlayText.style.display = '';
