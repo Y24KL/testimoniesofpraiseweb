@@ -139,7 +139,7 @@
       background: #111;
     }
     .offline-overlay video {
-      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55;
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
     }
     .offline-overlay-text {
       position: relative; z-index: 1; text-align: center; padding: 20px 30px;
@@ -291,7 +291,7 @@
 
           <div id="offlineState" class="offline-overlay">
             <video id="offlineVideo" muted loop autoplay playsinline></video>
-            <div class="offline-overlay-text">
+            <div class="offline-overlay-text" id="offlineOverlayText">
               <p>We're not live right now</p>
               <span>Check back soon — testimonies are on the way!</span>
             </div>
@@ -364,6 +364,7 @@
     const liveStatus = document.getElementById('liveStatus');
     const offlineState = document.getElementById('offlineState');
     const offlineVideo = document.getElementById('offlineVideo');
+    const offlineOverlayText = document.getElementById('offlineOverlayText');
     const infoHeading = document.getElementById('infoHeading');
     const infoDescription = document.getElementById('infoDescription');
 
@@ -453,8 +454,10 @@
       if (config.offlineVideoUrl) {
         offlineVideo.src = config.offlineVideoUrl;
         offlineVideo.style.display = 'block';
+        offlineOverlayText.style.display = 'none';
       } else {
         offlineVideo.style.display = 'none';
+        offlineOverlayText.style.display = '';
       }
 
       // The "Currently Live" toggle in the CMS is the source of truth.
