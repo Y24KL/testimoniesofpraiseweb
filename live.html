@@ -367,6 +367,26 @@
     // Valid YouTube video IDs are 11 characters of A-Z a-z 0-9 _ -
     const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/;
 
+    // Accepts a bare 11-char video ID, or any common YouTube URL shape
+    // (watch?v=, youtu.be/, /live/, /embed/, /shorts/, with or without
+    // extra query params like ?si=...), and returns just the ID.
+    function extractYouTubeId(input) {
+      if (!input) return '';
+      const trimmed = input.trim();
+      if (YOUTUBE_ID_PATTERN.test(trimmed)) return trimmed;
+
+      const patterns = [
+        /(?:youtube\.com\/(?:live|embed|shorts)\/)([A-Za-z0-9_-]{11})/,
+        /(?:youtu\.be\/)([A-Za-z0-9_-]{11})/,
+        /[?&]v=([A-Za-z0-9_-]{11})/,
+      ];
+      for (const re of patterns) {
+        const match = trimmed.match(re);
+        if (match) return match[1];
+      }
+      return '';
+    }
+
     const video = document.getElementById('livePlayer');
     const youtubePlayer = document.getElementById('youtubePlayer');
     const liveStatus = document.getElementById('liveStatus');
@@ -495,11 +515,11 @@
         return;
       }
 
-      const youtubeVideoId = (config.youtubeVideoId || '').trim();
-      if (youtubeVideoId && YOUTUBE_ID_PATTERN.test(youtubeVideoId)) {
+      const youtubeVideoId = extractYouTubeId(config.youtubeVideoId);
+      if (youtubeVideoId) {
         startYouTube(youtubeVideoId);
       } else {
-        if (youtubeVideoId) console.warn('Ignoring malformed YouTube video ID:', youtubeVideoId);
+        if (config.youtubeVideoId) console.warn('Could not extract a YouTube video ID from:', config.youtubeVideoId);
         startHls(config.streamUrl);
 
         // If nothing has confirmed an HLS stream after a while, show the offline state
