@@ -1,7 +1,7 @@
 {
-  "status": false,
+  "status": true,
   "streamUrl": "https://vcpout-lw-wdc-01-sp.ceflixcdn.com/lxp/play1/playlist.m3u8",
-  "youtubeVideoId": "",
+  "youtubeVideoId": "https://www.youtube.com/live/wXjppZbKHIw?si=Y3-KRsrOTxqDAwpD",
   "offlineVideoUrl": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1788260182/Video_2026-09-01_10-49-54_mgoqfg.mp4",
   "poster": "images/live-poster.jpg",
   "heading": "Testimonies of Praise Live",
