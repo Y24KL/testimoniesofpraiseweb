@@ -93,9 +93,24 @@
       padding: 15px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       height: 100%; display: flex; flex-direction: column; text-align: left;
     }
+    .video-card { position: relative; }
     .video-card:hover { transform: translateY(-10px); border-color: var(--accent); background: rgba(75, 0, 110, 0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
     .video-card video { width: 100%; aspect-ratio: 16/9; border-radius: 15px; object-fit: cover; margin-bottom: 15px; }
-    .video-card h3 { font-size: 1.1rem; color: #fff; font-weight: 600; }
+    .video-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .video-card h3 { font-size: 1.1rem; color: #fff; font-weight: 600; margin: 0; flex: 1; }
+    .video-share-btn {
+      background: transparent; border: 1px solid rgba(245, 197, 24, 0.4); color: var(--accent);
+      border-radius: 50px; padding: 6px 14px; font-size: 0.72rem; font-weight: 700; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; transition: 0.2s;
+      font-family: 'Poppins', sans-serif; flex-shrink: 0;
+    }
+    .video-share-btn:hover { background: var(--accent); color: var(--primary); }
+    .video-share-btn.copied { background: #7CF3B4; color: #000; border-color: #7CF3B4; }
+    .video-highlight { animation: highlightPulse 2s ease-out; }
+    @keyframes highlightPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 197, 24, 0); }
+      30% { box-shadow: 0 0 0 6px rgba(245, 197, 24, 0.5); border-color: var(--accent); }
+    }
 
     .video-state { width: 100%; text-align: center; padding: 60px 0; }
     .video-state p { color: #888; margin-top: 12px; }
