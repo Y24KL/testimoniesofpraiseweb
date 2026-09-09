@@ -91,6 +91,11 @@ async function applySettings() {
   if (xLink && settings.socials?.x) xLink.href = settings.socials.x;
 }
 
+// --- Utility: turn a video title into a URL-safe slug ---
+function slugify(title) {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 // --- Testimony video carousel (data/videos.json) ---
 async function initVideoCarousel() {
   const wrapper = document.getElementById('videoWrapper');
@@ -110,21 +115,48 @@ async function initVideoCarousel() {
     return;
   }
 
-  wrapper.innerHTML = videos.map(video => `
+  wrapper.innerHTML = videos.map((video, i) => {
+    const slug = slugify(video.title || `video-${i + 1}`);
+    const shareUrl = `${location.origin}${location.pathname}#${slug}`;
+    return `
     <div class="swiper-slide">
-      <div class="video-card">
+      <div class="video-card" id="video-${slug}" data-slug="${slug}">
         <video controls playsinline${video.poster ? ` poster="${video.poster}"` : ''}>
           <source src="${video.url}" type="video/mp4">
         </video>
-        <h3>${video.title}</h3>
+        <div class="video-card-footer">
+          <h3>${video.title}</h3>
+          <button class="video-share-btn" data-url="${shareUrl}" title="Copy shareable link">&#128279; Share</button>
+        </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
-  new Swiper('.videoSwiper', {
+  // Share button — copy link to clipboard, show "Copied!" for 2s
+  wrapper.querySelectorAll('.video-share-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.url);
+      } catch {
+        // Fallback for browsers without clipboard API
+        const ta = document.createElement('textarea');
+        ta.value = btn.dataset.url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      const original = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+
+  const swiper = new Swiper('.videoSwiper', {
     slidesPerView: 1,
     spaceBetween: 20,
-    loop: videos.length > 1,
+    loop: false, // loop off so we can reliably index into slides by hash
     grabCursor: true,
     pagination: { el: '.swiper-pagination', clickable: true, dynamicBullets: true },
     navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
@@ -133,6 +165,21 @@ async function initVideoCarousel() {
       1024: { slidesPerView: 3, spaceBetween: 40 }
     }
   });
+
+  // If the page was opened with a video hash link, scroll to the section,
+  // slide to that video, and highlight the card so it's obvious.
+  const hash = location.hash.replace('#', '');
+  if (hash) {
+    const idx = videos.findIndex(v => slugify(v.title || '') === hash);
+    if (idx !== -1) {
+      document.getElementById('videos')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      swiper.slideTo(idx, 0);
+      setTimeout(() => {
+        const card = wrapper.querySelector(`[data-slug="${hash}"]`);
+        if (card) card.classList.add('video-highlight');
+      }, 400);
+    }
+  }
 
   // Count a view the first time each video is actually played, not just rendered.
   wrapper.querySelectorAll('.video-card video').forEach((el, i) => {
