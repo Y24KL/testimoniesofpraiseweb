@@ -165,6 +165,7 @@
         <button class="tab-btn" data-tab="stream">Live Stream</button>
         <button class="tab-btn" data-tab="testimonies">Testimonies</button>
         <button class="tab-btn" data-tab="prayers">Prayer Requests</button>
+        <button class="tab-btn" data-tab="adotopoc">ADOTOPOC Resources</button>
       </div>
 
       <!-- ---- VIDEO ANALYTICS TAB ---- -->
@@ -222,6 +223,89 @@
         <div class="toolbar"><button class="btn" id="prayersRefreshBtn">Refresh</button></div>
         <div id="prayersContent">
           <div class="state"><div class="mini-spinner"></div><p>Loading prayer requests&hellip;</p></div>
+        </div>
+      </div>
+
+      <!-- ---- ADOTOPOC RESOURCES TAB ---- -->
+      <div class="tab-panel" id="tab-adotopoc">
+        <div class="page-title">ADOTOPOC 2026 Resources &amp; Analytics</div>
+        <div class="page-subtitle">Manage crusade media assets, videos, e-cards, graphics, and track downloads/views for 5 September 2026.</div>
+        <div id="adotopocErrorBox"></div>
+
+        <div class="summary-row" id="adotopocSummaryRow" style="display:none;">
+          <div class="summary-card"><div class="num" id="totalAdotopocResources">0</div><div class="label">Total Resources</div></div>
+          <div class="summary-card"><div class="num" id="totalAdotopocViews">0</div><div class="label">Total Views</div></div>
+          <div class="summary-card"><div class="num" id="totalAdotopocDownloads">0</div><div class="label">Total Downloads</div></div>
+          <div class="summary-card"><div class="num" id="totalAdotopocVideos">0</div><div class="label">Videos</div></div>
+          <div class="summary-card"><div class="num" id="totalAdotopocGraphics">0</div><div class="label">Graphics</div></div>
+          <div class="summary-card"><div class="num" id="totalAdotopocEcards">0</div><div class="label">E-Cards</div></div>
+        </div>
+
+        <div class="toolbar" style="justify-content: space-between; align-items: center;">
+          <button class="btn" id="toggleAddResourceBtn" style="background:var(--accent); color:var(--primary); font-weight:700;">+ Upload New Resource</button>
+          <button class="btn" id="adotopocRefreshBtn">Refresh</button>
+        </div>
+
+        <!-- Add Resource Form (collapsible) -->
+        <div id="addResourceCard" style="display:none; background:rgba(255,255,255,0.04); border:1px solid rgba(245,197,24,0.3); border-radius:16px; padding:24px; margin-bottom:24px;">
+          <h3 style="color:var(--accent); margin-bottom:16px; font-size:1.1rem; text-transform:uppercase;">Upload ADOTOPOC Resource</h3>
+          <form id="adotopocForm" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div style="grid-column:1 / -1;">
+              <label style="display:block; font-size:0.75rem; color:#aaa; margin-bottom:4px; text-transform:uppercase;">Resource Title *</label>
+              <input type="text" id="resTitle" required placeholder="e.g. Official Crusade Anthem &amp; Trailer" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px;">
+            </div>
+
+            <div style="grid-column:1 / -1;">
+              <label style="display:block; font-size:0.75rem; color:#aaa; margin-bottom:4px; text-transform:uppercase;">Description</label>
+              <textarea id="resDescription" rows="3" placeholder="Brief summary of the resource..." style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px;"></textarea>
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; color:#aaa; margin-bottom:4px; text-transform:uppercase;">Category *</label>
+              <select id="resCategory" required style="width:100%; padding:10px 14px; background:#110B18; border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px;">
+                <option value="video">Video</option>
+                <option value="graphic">Graphic</option>
+                <option value="ecard">E-Card</option>
+                <option value="photo">Photo</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; color:#aaa; margin-bottom:4px; text-transform:uppercase;">Event Date</label>
+              <input type="date" id="resEventDate" value="2026-09-05" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px;">
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; color:#aaa; margin-bottom:4px; text-transform:uppercase;">Thumbnail URL</label>
+              <input type="text" id="resThumbnailUrl" placeholder="https://... or /images/..." style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px;">
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; color:#aaa; margin-bottom:4px; text-transform:uppercase;">File / Download URL *</label>
+              <input type="text" id="resFileUrl" required placeholder="https://res.cloudinary.com/... or link" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px;">
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; color:#aaa; margin-bottom:4px; text-transform:uppercase;">File Type</label>
+              <input type="text" id="resFileType" placeholder="MP4, PNG, JPG, PDF" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px;">
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; color:#aaa; margin-bottom:4px; text-transform:uppercase;">Tags (comma separated)</label>
+              <input type="text" id="resTags" placeholder="anthem, crusade, promo" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px;">
+            </div>
+
+            <div style="grid-column:1 / -1; display:flex; gap:10px; justify-content:flex-end; margin-top:10px;">
+              <button type="button" id="cancelAddResourceBtn" class="btn">Cancel</button>
+              <button type="submit" id="saveResourceBtn" class="btn" style="background:var(--accent); color:var(--primary); font-weight:800;">Save &amp; Publish</button>
+            </div>
+          </form>
+          <div id="adotopocFormMsg" style="margin-top:10px; font-size:0.85rem;"></div>
+        </div>
+
+        <div id="adotopocContent">
+          <div class="state"><div class="mini-spinner"></div><p>Loading ADOTOPOC resources&hellip;</p></div>
         </div>
       </div>
     </main>
@@ -289,6 +373,7 @@
       loadStream();
       loadTestimonies();
       loadPrayers();
+      loadAdotopoc();
     }
 
     // ===== LOGIN =====
@@ -583,6 +668,219 @@
     }
 
     document.getElementById('prayersRefreshBtn').addEventListener('click', loadPrayers);
+
+    // ===== ADOTOPOC RESOURCES & ANALYTICS =====
+    let currentAdotopocResources = [];
+
+    const toggleAddBtn = document.getElementById('toggleAddResourceBtn');
+    const addCard = document.getElementById('addResourceCard');
+    const cancelAddBtn = document.getElementById('cancelAddResourceBtn');
+    const adotopocForm = document.getElementById('adotopocForm');
+    const formMsg = document.getElementById('adotopocFormMsg');
+
+    if (toggleAddBtn) {
+      toggleAddBtn.addEventListener('click', () => {
+        addCard.style.display = addCard.style.display === 'none' ? 'block' : 'none';
+      });
+    }
+    if (cancelAddBtn) {
+      cancelAddBtn.addEventListener('click', () => {
+        addCard.style.display = 'none';
+        adotopocForm.reset();
+        formMsg.innerHTML = '';
+      });
+    }
+
+    if (adotopocForm) {
+      adotopocForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('saveResourceBtn');
+        submitBtn.disabled = true;
+        formMsg.innerHTML = '<span style="color:var(--accent);">Uploading resource...</span>';
+
+        const tagsStr = document.getElementById('resTags').value.trim();
+        const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+        const payload = {
+          title: document.getElementById('resTitle').value.trim(),
+          description: document.getElementById('resDescription').value.trim(),
+          category: document.getElementById('resCategory').value,
+          event_name: 'ADOTOPOC 2026',
+          event_date: document.getElementById('resEventDate').value || '2026-09-05',
+          thumbnail_url: document.getElementById('resThumbnailUrl').value.trim() || null,
+          file_url: document.getElementById('resFileUrl').value.trim(),
+          file_type: document.getElementById('resFileType').value.trim() || 'MP4',
+          tags: tags,
+          status: 'published',
+          views: 0,
+          downloads: 0
+        };
+
+        try {
+          const res = await authFetch('/rest/v1/adotopoc_resources', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error(`Supabase returned status ${res.status}`);
+
+          formMsg.innerHTML = '<span style="color:#7CF3B4;">✓ Resource published successfully!</span>';
+          adotopocForm.reset();
+          setTimeout(() => {
+            addCard.style.display = 'none';
+            formMsg.innerHTML = '';
+            loadAdotopoc();
+          }, 1500);
+        } catch (err) {
+          console.error(err);
+          formMsg.innerHTML = `<span style="color:#ff6b6b;">Error: ${escapeHtml(err.message)}</span>`;
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    }
+
+    async function toggleResourceStatus(id, newStatus) {
+      try {
+        const res = await authFetch(`/rest/v1/adotopoc_resources?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (res.ok) loadAdotopoc();
+      } catch (err) {
+        alert('Could not update status: ' + err.message);
+      }
+    }
+
+    async function deleteResource(id) {
+      if (!confirm('Are you sure you want to permanently delete this resource?')) return;
+      try {
+        const res = await authFetch(`/rest/v1/adotopoc_resources?id=eq.${id}`, {
+          method: 'DELETE'
+        });
+        if (res.ok) loadAdotopoc();
+      } catch (err) {
+        alert('Could not delete resource: ' + err.message);
+      }
+    }
+
+    async function loadAdotopoc() {
+      const refreshBtn = document.getElementById('adotopocRefreshBtn');
+      const errorBox = document.getElementById('adotopocErrorBox');
+      const contentEl = document.getElementById('adotopocContent');
+      const summaryRow = document.getElementById('adotopocSummaryRow');
+
+      refreshBtn.disabled = true;
+      errorBox.innerHTML = '';
+      contentEl.innerHTML = '<div class="state"><div class="mini-spinner"></div><p>Loading ADOTOPOC resources&hellip;</p></div>';
+
+      try {
+        let items = [];
+        try {
+          const res = await authFetch('/rest/v1/adotopoc_resources?select=*&order=created_at.desc');
+          if (res.ok) items = await res.json();
+        } catch (e) {
+          console.warn('Supabase fetch failed, trying local fallback:', e);
+        }
+
+        if (!items || items.length === 0) {
+          const localRes = await fetch('../data/adotopoc.json');
+          if (localRes.ok) {
+            const json = await localRes.json();
+            items = json.resources || [];
+          }
+        }
+
+        currentAdotopocResources = items;
+
+        if (!items.length) {
+          summaryRow.style.display = 'none';
+          contentEl.innerHTML = '<div class="state"><p>No ADOTOPOC resources published yet. Click "Upload New Resource" above to add crusade media.</p></div>';
+          return;
+        }
+
+        // Calculate KPI totals
+        const totalViews = items.reduce((sum, r) => sum + (r.views || 0), 0);
+        const totalDownloads = items.reduce((sum, r) => sum + (r.downloads || 0), 0);
+        const videosCount = items.filter(r => r.category === 'video').length;
+        const graphicsCount = items.filter(r => r.category === 'graphic').length;
+        const ecardsCount = items.filter(r => r.category === 'ecard').length;
+
+        document.getElementById('totalAdotopocResources').textContent = items.length;
+        document.getElementById('totalAdotopocViews').textContent = totalViews.toLocaleString();
+        document.getElementById('totalAdotopocDownloads').textContent = totalDownloads.toLocaleString();
+        document.getElementById('totalAdotopocVideos').textContent = videosCount;
+        document.getElementById('totalAdotopocGraphics').textContent = graphicsCount;
+        document.getElementById('totalAdotopocEcards').textContent = ecardsCount;
+        summaryRow.style.display = 'flex';
+
+        // Render table
+        const rows = items.map((r, i) => {
+          const thumb = r.thumbnail_url
+            ? `<img src="${escapeHtml(r.thumbnail_url)}" style="width:48px;height:32px;object-fit:cover;border-radius:4px;" />`
+            : `<div style="width:48px;height:32px;background:#222;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888;">${r.category}</div>`;
+
+          const isPub = r.status === 'published';
+          const toggleAction = isPub ? 'unpublish' : 'publish';
+          const toggleLabel = isPub ? 'Unpublish' : 'Publish';
+
+          return `
+            <tr>
+              <td style="width:60px;">${thumb}</td>
+              <td>
+                <div style="font-weight:600; color:#fff;">${escapeHtml(r.title)}</div>
+                <div style="font-size:0.75rem; color:#888;">${escapeHtml(r.category)} &bull; ${escapeHtml(r.event_date || '2026-09-05')}</div>
+              </td>
+              <td class="views-col" style="color:var(--accent); font-weight:700;">${(r.views || 0).toLocaleString()}</td>
+              <td class="views-col" style="color:#7CF3B4; font-weight:700;">${(r.downloads || 0).toLocaleString()}</td>
+              <td>
+                <span style="font-size:0.75rem; padding:3px 8px; border-radius:12px; font-weight:600; text-transform:uppercase; background:${isPub ? 'rgba(124,243,180,0.15)' : 'rgba(255,255,255,0.1)'}; color:${isPub ? '#7CF3B4' : '#aaa'}; border:1px solid ${isPub ? '#7CF3B4' : '#666'};">
+                  ${escapeHtml(r.status || 'published')}
+                </span>
+              </td>
+              <td style="text-align:right;">
+                <button onclick="toggleResourceStatus(${r.id}, '${isPub ? 'draft' : 'published'}')" style="background:none; border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 10px; border-radius:6px; font-size:0.75rem; cursor:pointer; margin-right:6px;">
+                  ${toggleLabel}
+                </button>
+                <button onclick="deleteResource(${r.id})" style="background:none; border:1px solid rgba(255,100,100,0.4); color:#ff6b6b; padding:4px 10px; border-radius:6px; font-size:0.75rem; cursor:pointer;">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        contentEl.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Resource</th>
+                <th class="views-col">Views</th>
+                <th class="views-col">Downloads</th>
+                <th>Status</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      } catch (err) {
+        console.error(err);
+        if (err.message !== 'Session expired') {
+          errorBox.innerHTML = `<div class="error-box">Couldn't load ADOTOPOC resources: ${escapeHtml(err.message)}</div>`;
+        }
+        contentEl.innerHTML = '';
+      } finally {
+        refreshBtn.disabled = false;
+      }
+    }
+
+    window.toggleResourceStatus = toggleResourceStatus;
+    window.deleteResource = deleteResource;
+    document.getElementById('adotopocRefreshBtn')?.addEventListener('click', loadAdotopoc);
+
 
     // ===== INIT =====
     (function init() {

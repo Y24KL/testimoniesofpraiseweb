@@ -1,0 +1,6 @@
+/live.html /live 301
+/admin/* /admin/:splat 200
+/data/* /data/:splat 200
+/images/* /images/:splat 200
+/videos/* /videos/:splat 200
+/* /index.html 200

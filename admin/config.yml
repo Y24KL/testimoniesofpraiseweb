@@ -70,3 +70,31 @@ collections:
             fields:
               - {label: "Kingschat", name: "kingschat", widget: string, required: false}
               - {label: "X (Twitter)", name: "x", widget: string, required: false}
+
+  - name: "adotopoc"
+    label: "ADOTOPOC 2026 Resources"
+    label_singular: "Resource"
+    description: "Media assets, videos, graphics, and e-cards for A Day of Testimonies of Praise Outreaches and Crusades (5 September 2026)."
+    files:
+      - name: "resources"
+        label: "Crusade Media Resources"
+        file: "data/adotopoc.json"
+        format: json
+        fields:
+          - label: "Resources"
+            name: "resources"
+            widget: list
+            summary: "{{title}} ({{category}})"
+            fields:
+              - {label: "Resource Title", name: "title", widget: string}
+              - {label: "Description", name: "description", widget: text}
+              - {label: "Category", name: "category", widget: select, options: ["video", "graphic", "ecard", "photo", "other"]}
+              - {label: "Event Name", name: "event_name", widget: string, default: "ADOTOPOC 2026"}
+              - {label: "Event Date", name: "event_date", widget: date, default: "2026-09-05", format: "YYYY-MM-DD"}
+              - {label: "Thumbnail / Preview Image", name: "thumbnail_url", widget: string, hint: "Image link (Cloudinary URL or /images/...)"}
+              - {label: "File / Media URL", name: "file_url", widget: string, hint: "Direct link to .mp4, high-res graphic, or PDF file"}
+              - {label: "File Type", name: "file_type", widget: string, default: "MP4"}
+              - {label: "File Size (bytes)", name: "file_size_bytes", widget: number, required: false}
+              - {label: "Tags", name: "tags", widget: list, required: false}
+              - {label: "Status", name: "status", widget: select, options: ["published", "draft"], default: "published"}
+
