@@ -45,6 +45,24 @@ export async function submitTestimonyToSupabase({ fullName, zone, message }) {
 }
 
 /**
+ * Fetch written testimonies from Supabase
+ */
+export async function fetchWrittenTestimonies(limit = 50) {
+  try {
+    const { data, error } = await supabase
+      .from('testimonies')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    console.warn('Supabase fetchWrittenTestimonies error (using fallback):', err);
+    return [];
+  }
+}
+
+/**
  * Submit prayer request to Supabase prayer_requests table
  */
 export async function submitPrayerRequest({ name, request }) {

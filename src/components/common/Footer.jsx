@@ -63,12 +63,9 @@ export default function Footer() {
             <Link to="/" className="text-sm text-white/70 hover:text-brand-accent transition-colors">
               Home
             </Link>
-            <button
-              onClick={() => scrollTo('#testifiers', { offset: -80 })}
-              className="text-left text-sm text-white/70 hover:text-brand-accent transition-colors"
-            >
-              Testifiers &amp; Recaps
-            </button>
+            <Link to="/testifiers" className="text-sm text-white/70 hover:text-brand-accent transition-colors">
+              Testifiers &amp; Archive
+            </Link>
             <Link to="/live" className="text-sm text-white/70 hover:text-brand-accent transition-colors">
               Live Broadcast
             </Link>

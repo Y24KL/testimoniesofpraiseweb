@@ -33,7 +33,7 @@ export default function Navbar() {
 
   const navLinks = [
     { label: 'HOME', to: '/' },
-    { label: 'TESTIFIERS', to: '/#testifiers', isAnchor: true },
+    { label: 'TESTIFIERS', to: '/testifiers' },
     { label: 'WATCH LIVE', to: '/live', badge: stream?.status ? 'LIVE' : null },
     { label: 'ADOTOPOC', to: '/adotopoc', highlight: true },
   ];
@@ -66,44 +66,31 @@ export default function Navbar() {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => {
-            if (link.isAnchor && location.pathname === '/') {
-              return (
-                <button
-                  key={link.label}
-                  onClick={() => scrollTo('#testifiers', { offset: -90 })}
-                  className="text-xs font-semibold tracking-[0.15em] text-white/80 hover:text-brand-accent transition-colors uppercase"
-                >
-                  {link.label}
-                </button>
-              );
-            }
-            return (
-              <Link
-                key={link.label}
-                to={link.to}
-                className={`relative text-xs font-semibold tracking-[0.15em] transition-all duration-300 uppercase py-1 ${
-                  location.pathname === link.to
-                    ? 'text-brand-accent font-bold'
-                    : 'text-white/80 hover:text-brand-accent'
-                } ${link.highlight ? 'text-amber-300 font-bold hover:text-brand-accent-light' : ''}`}
-              >
-                <span className="flex items-center gap-1.5">
-                  {link.highlight && <Sparkles className="w-3.5 h-3.5 text-brand-accent" />}
-                  {link.label}
-                  {link.badge && (
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-red-600/90 text-white animate-pulse shadow-lg shadow-red-600/50">
-                      <span className="w-1.5 h-1.5 mr-1 bg-white rounded-full"></span>
-                      {link.badge}
-                    </span>
-                  )}
-                </span>
-                {location.pathname === link.to && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-brand-accent to-transparent" />
+          {navLinks.map((link) => (
+            <Link
+              key={link.label}
+              to={link.to}
+              className={`relative text-xs font-semibold tracking-[0.15em] transition-all duration-300 uppercase py-1 ${
+                location.pathname === link.to
+                  ? 'text-brand-accent font-bold'
+                  : 'text-white/80 hover:text-brand-accent'
+              } ${link.highlight ? 'text-amber-300 font-bold hover:text-brand-accent-light' : ''}`}
+            >
+              <span className="flex items-center gap-1.5">
+                {link.highlight && <Sparkles className="w-3.5 h-3.5 text-brand-accent" />}
+                {link.label}
+                {link.badge && (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-red-600/90 text-white animate-pulse shadow-lg shadow-red-600/50">
+                    <span className="w-1.5 h-1.5 mr-1 bg-white rounded-full"></span>
+                    {link.badge}
+                  </span>
                 )}
-              </Link>
-            );
-          })}
+              </span>
+              {location.pathname === link.to && (
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-brand-accent to-transparent" />
+              )}
+            </Link>
+          ))}
         </nav>
 
         {/* Right CTA */}
@@ -146,37 +133,26 @@ export default function Navbar() {
         }`}
       >
         <div className="flex flex-col gap-6 mt-4">
-          {navLinks.map((link) => {
-            if (link.isAnchor && location.pathname === '/') {
-              return (
-                <button
-                  key={link.label}
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    scrollTo('#testifiers', { offset: -80 });
-                  }}
-                  className="text-left text-lg font-cinzel font-semibold tracking-wider text-white/90 hover:text-brand-accent transition-colors"
-                >
-                  {link.label}
-                </button>
-              );
-            }
-            return (
-              <Link
-                key={link.label}
-                to={link.to}
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between text-lg font-cinzel font-semibold tracking-wider text-white/90 hover:text-brand-accent transition-colors"
-              >
-                <span>{link.label}</span>
-                {link.badge && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-600 text-white">
-                    {link.badge}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
+          {navLinks.map((link) => (
+            <Link
+              key={link.label}
+              to={link.to}
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center justify-between text-lg font-cinzel font-semibold tracking-wider transition-colors ${
+                location.pathname === link.to ? 'text-brand-accent font-bold' : 'text-white/90 hover:text-brand-accent'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                {link.highlight && <Sparkles className="w-4 h-4 text-brand-accent" />}
+                {link.label}
+              </span>
+              {link.badge && (
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-600 text-white">
+                  {link.badge}
+                </span>
+              )}
+            </Link>
+          ))}
         </div>
 
         <div className="pt-6 border-t border-white/10 flex flex-col gap-4">

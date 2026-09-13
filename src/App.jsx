@@ -10,6 +10,7 @@ import SocialBubble from './components/common/SocialBubble';
 
 import HomePage from './pages/HomePage';
 import LivePage from './pages/LivePage';
+import TestifiersPage from './pages/TestifiersPage';
 import AdotopocPage from './pages/AdotopocPage';
 import ResourceDetailPage from './pages/ResourceDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -29,6 +30,9 @@ export default function App() {
           <main className="relative z-10 flex-grow">
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/testifiers" element={<TestifiersPage />} />
+              <Route path="/testifiers.html" element={<TestifiersPage />} />
+              <Route path="/testimonies" element={<TestifiersPage />} />
               <Route path="/live" element={<LivePage />} />
               <Route path="/live.html" element={<LivePage />} />
               <Route path="/adotopoc" element={<AdotopocPage />} />

@@ -47,6 +47,17 @@ function copyStaticAssetsPlugin() {
         fs.copyFileSync(indexHtmlPath, path.join(liveDir, 'index.html'));
         fs.copyFileSync(indexHtmlPath, path.join(outDir, 'live.html'));
 
+        // Route fallback for /testifiers and /testimonies
+        const testifiersDir = path.join(outDir, 'testifiers');
+        if (!fs.existsSync(testifiersDir)) fs.mkdirSync(testifiersDir, { recursive: true });
+        fs.copyFileSync(indexHtmlPath, path.join(testifiersDir, 'index.html'));
+        fs.copyFileSync(indexHtmlPath, path.join(outDir, 'testifiers.html'));
+
+        const testimoniesDir = path.join(outDir, 'testimonies');
+        if (!fs.existsSync(testimoniesDir)) fs.mkdirSync(testimoniesDir, { recursive: true });
+        fs.copyFileSync(indexHtmlPath, path.join(testimoniesDir, 'index.html'));
+        fs.copyFileSync(indexHtmlPath, path.join(outDir, 'testimonies.html'));
+
         // Route fallback for /adotopoc
         const adotopocDir = path.join(outDir, 'adotopoc');
         if (!fs.existsSync(adotopocDir)) fs.mkdirSync(adotopocDir, { recursive: true });

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Share2, Check, Play, Film, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { trackVideoView } from '../../services/supabase';
@@ -167,6 +168,17 @@ export default function VideoCarousel() {
               </div>
             );
           })}
+        </div>
+
+        {/* Explore All Testimonies Button */}
+        <div className="mt-8 flex justify-center">
+          <Link
+            to="/testifiers"
+            className="group inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-brand-accent/30 hover:border-brand-accent hover:bg-brand-accent hover:text-brand-primary text-brand-accent text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-lg"
+          >
+            <span>Explore All Testimonies &amp; Miracle Archive</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </div>
     </section>
