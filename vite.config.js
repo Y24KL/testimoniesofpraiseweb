@@ -27,14 +27,33 @@ function copyStaticAssetsPlugin() {
       for (const dir of dirsToCopy) {
         copyDirSync(path.resolve(__dirname, dir), path.join(outDir, dir));
       }
-      const filesToCopy = ['_redirects'];
+      const filesToCopy = ['_redirects', 'render.yaml'];
       for (const f of filesToCopy) {
         const src = path.resolve(__dirname, f);
         if (fs.existsSync(src)) {
           fs.copyFileSync(src, path.join(outDir, f));
         }
       }
-      console.log('Successfully synced static assets into dist/');
+
+      // Generate SPA route fallback files for static hosts (Render, Netlify, GitHub Pages)
+      const indexHtmlPath = path.join(outDir, 'index.html');
+      if (fs.existsSync(indexHtmlPath)) {
+        // 404.html fallback for static hosts
+        fs.copyFileSync(indexHtmlPath, path.join(outDir, '404.html'));
+
+        // Route fallback for /live and /live.html
+        const liveDir = path.join(outDir, 'live');
+        if (!fs.existsSync(liveDir)) fs.mkdirSync(liveDir, { recursive: true });
+        fs.copyFileSync(indexHtmlPath, path.join(liveDir, 'index.html'));
+        fs.copyFileSync(indexHtmlPath, path.join(outDir, 'live.html'));
+
+        // Route fallback for /adotopoc
+        const adotopocDir = path.join(outDir, 'adotopoc');
+        if (!fs.existsSync(adotopocDir)) fs.mkdirSync(adotopocDir, { recursive: true });
+        fs.copyFileSync(indexHtmlPath, path.join(adotopocDir, 'index.html'));
+      }
+
+      console.log('Successfully synced static assets and SPA route fallbacks into dist/');
     }
   };
 }

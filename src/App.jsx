@@ -30,6 +30,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/live" element={<LivePage />} />
+              <Route path="/live.html" element={<LivePage />} />
               <Route path="/adotopoc" element={<AdotopocPage />} />
               <Route path="/adotopoc/resource/:id" element={<ResourceDetailPage />} />
               <Route path="*" element={<NotFoundPage />} />
