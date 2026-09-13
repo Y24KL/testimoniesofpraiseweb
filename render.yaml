@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: testimoniesofpraiseweb
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    routes:
+      - type: rewrite
+        source: /live.html
+        destination: /live
+      - type: rewrite
+        source: /*
+        destination: /index.html
