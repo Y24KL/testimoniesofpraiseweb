@@ -26,7 +26,7 @@ export default function HomePage() {
               <span>Official Media Resource Hub</span>
             </div>
             <h2 className="font-cinzel text-2xl sm:text-4xl font-extrabold text-white uppercase tracking-tight">
-              ADOTOPOC <span className="text-gold-gradient">Media Resource Hub</span>
+              ADOTOPOC <span className="text-gold-gradient"></span>
             </h2>
             <p className="text-sm text-white/75 leading-relaxed">
               A Day of Testimonies of Praise Outreaches and Crusades. Download official crusade flyers, promotionals, social e-cards, and evangelism toolkits.
