@@ -120,9 +120,6 @@ export default function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/40">
           <p>© 2026 Testimonies of Praise. All rights reserved.</p>
           <div className="flex items-center gap-2">
-            <span>Crafted for God's Glory with</span>
-            <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 inline" />
-            <span>&amp; Miracles</span>
           </div>
         </div>
       </div>
