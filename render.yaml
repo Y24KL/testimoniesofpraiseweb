@@ -3,12 +3,24 @@ services:
     name: testimoniesofpraiseweb
     env: static
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    pullRequestPreviewsEnabled: false
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
     routes:
       - type: rewrite
-        source: /live.html
-        destination: /live
+        source: /admin
+        destination: /admin/index.html
+      - type: rewrite
+        source: /admin/*
+        destination: /admin/$1
+      - type: rewrite
+        source: /data/*
+        destination: /data/$1
+      - type: rewrite
+        source: /images/*
+        destination: /images/$1
       - type: rewrite
         source: /*
         destination: /index.html
