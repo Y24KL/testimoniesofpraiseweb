@@ -201,10 +201,6 @@ export default function Navbar() {
             <a href="https://x.com/testimonies_lmm" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent">
               X (Twitter)
             </a>
-            <span>•</span>
-            <a href="/admin/" className="hover:text-brand-accent">
-              Content Admin
-            </a>
           </div>
         </div>
       </div>
