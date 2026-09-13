@@ -96,23 +96,6 @@ export default function Footer() {
             <p className="text-xs text-white/50">
               A Day of Testimonies of Praise Outreaches &amp; Crusades Media Center
             </p>
-
-            <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-2">
-              <a
-                href="/admin/"
-                className="text-xs text-white/50 hover:text-brand-accent flex items-center gap-1.5 transition-colors"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-brand-accent/70" />
-                <span>Content Manager (CMS)</span>
-              </a>
-              <a
-                href="/admin/analytics.html"
-                className="text-xs text-white/50 hover:text-brand-accent flex items-center gap-1.5 transition-colors"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-accent"></span>
-                <span>Admin Analytics &amp; Reports</span>
-              </a>
-            </div>
           </div>
         </div>
 
@@ -120,6 +103,9 @@ export default function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/40">
           <p>© 2026 Testimonies of Praise. All rights reserved.</p>
           <div className="flex items-center gap-2">
+            <span>Crafted for God's Glory with</span>
+            <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 inline" />
+            <span>&amp; Miracles</span>
           </div>
         </div>
       </div>
