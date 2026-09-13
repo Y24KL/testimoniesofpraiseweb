@@ -89,29 +89,33 @@ export default function LivePlayer() {
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              className="absolute inset-0 w-full h-full object-cover"
             >
               <source src={offlineVideo} type="video/mp4" />
             </video>
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-          {/* Offline Message Card */}
-          <div className="relative z-10 text-center px-4 max-w-lg">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs font-bold uppercase tracking-wider mb-4">
-              <Clock className="w-4 h-4 text-brand-accent" />
-              <span>Broadcast Currently Offline</span>
+          {/* Offline Message — only show when no background video is set */}
+          {!offlineVideo && (
+            <div className="relative z-10 text-center px-4 max-w-lg">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs font-bold uppercase tracking-wider mb-4">
+                <Clock className="w-4 h-4 text-brand-accent" />
+                <span>Broadcast Currently Offline</span>
+              </div>
+
+              <h3 className="font-cinzel text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-tight">
+                Testimonies of Praise Live
+              </h3>
+              <p className="mt-3 text-xs sm:text-sm text-white/70 leading-relaxed">
+                {stream?.description || "We are preparing for our next live miracle service. Stay tuned or explore our recorded testimonies below!"}
+              </p>
             </div>
+          )}
 
-            <h3 className="font-cinzel text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-tight">
-              Testimonies of Praise Live
-            </h3>
-            <p className="mt-3 text-xs sm:text-sm text-white/70 leading-relaxed">
-              {stream?.description || "We are preparing for our next live miracle service. Stay tuned or explore our recorded testimonies below!"}
-            </p>
-
-            {offlineVideo && (
+          {/* Sound toggle — always show when background video is present */}
+          {offlineVideo && (
               <button
                 onClick={toggleOfflineSound}
                 className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 border border-white/20 text-xs font-semibold text-brand-accent hover:border-brand-accent transition-all"
