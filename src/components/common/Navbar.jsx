@@ -35,7 +35,7 @@ export default function Navbar() {
     { label: 'HOME', to: '/' },
     { label: 'TESTIFIERS', to: '/#testifiers', isAnchor: true },
     { label: 'WATCH LIVE', to: '/live', badge: stream?.status ? 'LIVE' : null },
-    { label: 'ADOTOPOC MEDIA HUB', to: '/adotopoc', highlight: true },
+    { label: 'ADOTOPOC', to: '/adotopoc', highlight: true },
   ];
 
   return (
@@ -60,9 +60,6 @@ export default function Navbar() {
           <div className="flex flex-col">
             <span className="font-cinzel text-xs sm:text-sm font-bold tracking-[0.2em] text-brand-accent uppercase drop-shadow">
               Testimonies of Praise
-            </span>
-            <span className="text-[10px] text-white/50 tracking-[0.25em] font-medium hidden sm:block">
-              GLOBAL MIRACLES &amp; CRUSADES
             </span>
           </div>
         </Link>
