@@ -197,6 +197,17 @@
       "description": "This is to be printed and placed on T-shirts and stickers ",
       "file_type": "PNG",
       "category": "graphic"
+    },
+    {
+      "file_url": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1789430082/Time_Is_Now_koxchf.mp4",
+      "event_name": "ADOTOPOC 2026",
+      "status": "published",
+      "event_date": "2026-09-05",
+      "title": "TIME IS NOW BY LOVEWORLD SINGERS ",
+      "thumbnail_url": "https://res.cloudinary.com/duw6xrnpn/image/upload/v1789400709/ADOTOPC_gy7jpx.jpg",
+      "description": "A salvation song led by the Loveworld singers  ",
+      "file_type": "MP4",
+      "category": "video"
     }
   ]
 }
