@@ -153,6 +153,17 @@
       "description": "Official logo of the ADOTOPOC",
       "file_type": "PNG",
       "category": "graphic"
+    },
+    {
+      "file_url": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1789428635/Symbolisms_In_Music_qp5xkt.mp4",
+      "event_name": "ADOTOPOC 2026",
+      "status": "published",
+      "event_date": "2026-09-05",
+      "title": "SYMBOLISMS IN MUSIC DOCUMENTARY",
+      "thumbnail_url": "https://res.cloudinary.com/duw6xrnpn/image/upload/v1789400709/ADOTOPC_gy7jpx.jpg",
+      "description": "Documentary on symbolisms in music",
+      "file_type": "MP4",
+      "category": "video"
     }
   ]
 }
