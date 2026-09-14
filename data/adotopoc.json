@@ -109,6 +109,17 @@
       "description": "Listen to God of all Grace by the Loveworld Singers",
       "file_type": "MP4",
       "category": "video"
+    },
+    {
+      "file_url": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1789420603/Adotop_Promo_hj3cbk.mp4",
+      "event_name": "ADOTOPOC 2026",
+      "status": "published",
+      "event_date": "2026-09-05",
+      "title": "OFFICIAL PROMO OF ADOTOPOC 2026",
+      "thumbnail_url": "https://res.cloudinary.com/duw6xrnpn/image/upload/v1789400709/ADOTOPC_gy7jpx.jpg",
+      "description": "Download the official promotional video of the ADOTOPOC 2026",
+      "file_type": "MP4",
+      "category": "video"
     }
   ]
 }
