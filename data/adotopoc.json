@@ -164,6 +164,17 @@
       "description": "Documentary on symbolisms in music",
       "file_type": "MP4",
       "category": "video"
+    },
+    {
+      "file_url": "https://res.cloudinary.com/duw6xrnpn/video/upload/v1789428684/Not_Ashamed_Of_The_Gospel_x31vtv.mp4",
+      "event_name": "ADOTOPOC 2026",
+      "status": "published",
+      "event_date": "2026-09-05",
+      "title": "WE ARE NOT ASHAMED OF THE GOSPEL BY LOVEWORLD SINGERS",
+      "thumbnail_url": "https://res.cloudinary.com/duw6xrnpn/image/upload/v1789400709/ADOTOPC_gy7jpx.jpg",
+      "description": "We are not ashamed of the gospel by the Loveworld Singers ",
+      "file_type": "MP4",
+      "category": "video"
     }
   ]
 }
