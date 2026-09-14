@@ -120,6 +120,17 @@
       "description": "Download the official promotional video of the ADOTOPOC 2026",
       "file_type": "MP4",
       "category": "video"
+    },
+    {
+      "file_url": "https://res.cloudinary.com/duw6xrnpn/image/upload/v1789425392/WE_ARE_LIVE_hjzlwp.png",
+      "event_name": "ADOTOPOC 2026",
+      "status": "published",
+      "event_date": "2026-09-05",
+      "title": "WE ARE LIVE ASSET ",
+      "thumbnail_url": "https://res.cloudinary.com/duw6xrnpn/image/upload/v1789400709/ADOTOPC_gy7jpx.jpg",
+      "description": "Display for streaming deck",
+      "file_type": "PNG",
+      "category": "other"
     }
   ]
 }
