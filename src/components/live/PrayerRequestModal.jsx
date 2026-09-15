@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { X, Send, Heart, Check, Sparkles } from 'lucide-react';
 import { submitPrayerRequest } from '../../services/supabase';
+import Portal from '../common/Portal';
+import { useSmoothScroll } from '../../context/SmoothScroll';
+import useLockBodyScroll from '../../utils/useLockBodyScroll';
 
 export default function PrayerRequestModal({ isOpen, onClose }) {
   const [name, setName] = useState('');
   const [request, setRequest] = useState('');
   const [status, setStatus] = useState('idle'); // 'idle' | 'submitting' | 'success' | 'error'
   const [errorMsg, setErrorMsg] = useState('');
+  const { lenis } = useSmoothScroll();
+
+  useLockBodyScroll(isOpen, lenis);
 
   if (!isOpen) return null;
 
@@ -36,8 +42,16 @@ export default function PrayerRequestModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-md rounded-2xl bg-brand-obsidian border border-brand-accent/30 p-6 sm:p-8 shadow-2xl shadow-brand-primary/40">
+    <Portal>
+    <div
+      className="fixed inset-0 z-[110] flex items-center justify-center p-4 backdrop-blur-md animate-fadeIn"
+      style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-md rounded-2xl bg-brand-obsidian border border-brand-accent/30 p-6 sm:p-8 shadow-2xl shadow-brand-primary/40"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -127,5 +141,6 @@ export default function PrayerRequestModal({ isOpen, onClose }) {
         )}
       </div>
     </div>
+    </Portal>
   );
 }

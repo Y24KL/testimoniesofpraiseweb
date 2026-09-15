@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { X, Download, Share2, Check, Eye, Calendar, Tag, FileText } from 'lucide-react';
 import { formatBytes } from '../../utils/slugify';
 import { trackAdotopocView, trackAdotopocDownload } from '../../services/supabase';
+import Portal from '../common/Portal';
+import { useSmoothScroll } from '../../context/SmoothScroll';
+import useLockBodyScroll from '../../utils/useLockBodyScroll';
 
 export default function ResourceModal({ resource, onClose }) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const { lenis } = useSmoothScroll();
+
+  useLockBodyScroll(!!resource, lenis);
 
   useEffect(() => {
     if (resource) {
@@ -56,8 +62,16 @@ export default function ResourceModal({ resource, onClose }) {
   const isImage = ['graphic', 'ecard', 'photo'].includes(resource.category) || ['png', 'jpg', 'jpeg', 'webp'].includes((resource.file_type || '').toLowerCase());
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-xl animate-fadeIn">
-      <div className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl bg-brand-obsidian border border-brand-accent/30 shadow-2xl shadow-black overflow-hidden flex flex-col">
+    <Portal>
+    <div
+      className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 backdrop-blur-xl animate-fadeIn"
+      style={{ backgroundColor: 'rgba(0,0,0,0.9)' }}
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl bg-brand-obsidian border border-brand-accent/30 shadow-2xl shadow-black overflow-hidden flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/60">
           <div className="flex items-center gap-2">
@@ -173,5 +187,6 @@ export default function ResourceModal({ resource, onClose }) {
         </div>
       </div>
     </div>
+    </Portal>
   );
 }

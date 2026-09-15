@@ -3,13 +3,17 @@ import { Link, useLocation } from 'react-router-dom';
 import { Radio, Menu, X, Sparkles, HeartHandshake } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useSmoothScroll } from '../../context/SmoothScroll';
+import Portal from './Portal';
+import useLockBodyScroll from '../../utils/useLockBodyScroll';
 
 export default function Navbar() {
   const { stream } = useApp();
-  const { scrollTo } = useSmoothScroll();
+  const { scrollTo, lenis } = useSmoothScroll();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useLockBodyScroll(mobileMenuOpen, lenis);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -126,11 +130,16 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu — portaled to <body> so it always covers the
+          real viewport instead of being clipped/mis-positioned by an
+          `overflow-hidden` page ancestor */}
+      <Portal>
       <div
-        className={`md:hidden fixed inset-0 top-[60px] bg-black/95 backdrop-blur-2xl transition-all duration-500 flex flex-col justify-between p-6 z-40 ${
+        className={`md:hidden fixed inset-0 top-[60px] backdrop-blur-2xl transition-all duration-500 flex flex-col justify-between p-6 z-[100] ${
           mobileMenuOpen ? 'opacity-100 pointer-events-auto translate-y-0' : 'opacity-0 pointer-events-none -translate-y-8'
         }`}
+        style={{ backgroundColor: 'rgba(0,0,0,0.97)' }}
+        aria-hidden={!mobileMenuOpen}
       >
         <div className="flex flex-col gap-6 mt-4">
           {navLinks.map((link) => (
@@ -177,6 +186,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      </Portal>
     </header>
   );
 }

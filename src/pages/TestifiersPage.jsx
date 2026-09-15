@@ -27,6 +27,9 @@ import { slugify } from '../utils/slugify';
 import TiltCard from '../components/animations/TiltCard';
 import RevealOnScroll from '../components/animations/RevealOnScroll';
 import TestimonyForm from '../components/home/TestimonyForm';
+import Portal from '../components/common/Portal';
+import { useSmoothScroll } from '../context/SmoothScroll';
+import useLockBodyScroll from '../utils/useLockBodyScroll';
 
 // Initial curated inspiring testimonies to ensure immediate richness
 const INITIAL_WRITTEN_TESTIMONIES = [
@@ -66,6 +69,8 @@ export default function TestifiersPage() {
   const [copiedSlug, setCopiedSlug] = useState(null);
   const [activeModalVideo, setActiveModalVideo] = useState(null);
   const [activeModalStory, setActiveModalStory] = useState(null);
+  const { lenis } = useSmoothScroll();
+  useLockBodyScroll(!!activeModalStory, lenis);
   const [likedMap, setLikedMap] = useState({});
 
   const formRef = useRef(null);
@@ -458,10 +463,19 @@ export default function TestifiersPage() {
         </div>
       </div>
 
-      {/* Full Written Story Modal */}
+      {/* Full Written Story Modal — portaled to <body> so it isn't clipped
+          or bled-through by this page's own `overflow-hidden` wrapper */}
       {activeModalStory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
-          <div className="relative w-full max-w-2xl rounded-2xl bg-zinc-950 border border-brand-accent/40 shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+        <Portal>
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center p-4 backdrop-blur-xl"
+          style={{ backgroundColor: 'rgba(0,0,0,0.9)' }}
+          onClick={() => setActiveModalStory(null)}
+        >
+          <div
+            className="relative w-full max-w-2xl rounded-2xl bg-zinc-950 border border-brand-accent/40 shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => setActiveModalStory(null)}
               className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white cursor-pointer"
@@ -498,6 +512,7 @@ export default function TestifiersPage() {
             </div>
           </div>
         </div>
+        </Portal>
       )}
     </div>
   );
