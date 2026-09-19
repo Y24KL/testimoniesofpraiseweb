@@ -23,3 +23,29 @@ export function formatBytes(bytes, decimals = 1) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
+
+/**
+ * Ensure every item in a list has a stable, unique `id`.
+ *
+ * The CMS-managed data/adotopoc.json resources have no id field at all
+ * (see admin/config.yml — "adotopoc" collection has no id widget), so
+ * resource.id was always undefined for anything served from that file.
+ * That made shareable resource links resolve to ".../resource/undefined"
+ * and, once opened, the lookup on the detail page matched a resource by
+ * coincidence rather than by identity. Rows that already carry a real id
+ * (e.g. from a populated Supabase table) are left untouched; everything
+ * else gets a slug of its title, de-duplicated against collisions.
+ */
+export function withStableIds(items, { titleKey = 'title' } = {}) {
+  const seen = new Map();
+  return (items || []).map((item, index) => {
+    if (item && item.id) return item;
+
+    const base = slugify(item?.[titleKey]) || `resource-${index}`;
+    const count = seen.get(base) || 0;
+    seen.set(base, count + 1);
+    const id = count === 0 ? base : `${base}-${count + 1}`;
+
+    return { ...item, id };
+  });
+}

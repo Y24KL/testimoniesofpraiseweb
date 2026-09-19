@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { withStableIds } from '../utils/slugify';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://huiytazoiiqrebugdbds.supabase.co';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1aXl0YXpvaWlxcmVidWdkYmRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMjIyODksImV4cCI6MjEwMzU5ODI4OX0.ttS6WDmfrv9I1VRNcRI7EGAmjjK9DRLM9_eiDuHcuz4';
@@ -131,18 +132,18 @@ export async function fetchAdotopocResources() {
       const res = await fetch('/data/adotopoc.json');
       if (res.ok) {
         const json = await res.json();
-        return json.resources || [];
+        return withStableIds(json.resources || []);
       }
       return [];
     }
-    return data;
+    return withStableIds(data);
   } catch (err) {
     console.warn('Supabase ADOTOPOC fetch error, using fallback:', err);
     try {
       const res = await fetch('/data/adotopoc.json');
       if (res.ok) {
         const json = await res.json();
-        return json.resources || [];
+        return withStableIds(json.resources || []);
       }
     } catch {}
     return [];

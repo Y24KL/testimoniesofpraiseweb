@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Eye, Video, Image, CreditCard, Camera, FileText, Check } from 'lucide-react';
+import { Download, Eye, Video, Image, CreditCard, Camera, FileText, Check, Share2 } from 'lucide-react';
 import { formatBytes } from '../../utils/slugify';
 import { trackAdotopocDownload } from '../../services/supabase';
 import TiltCard from '../animations/TiltCard';
@@ -23,9 +23,27 @@ const CATEGORY_COLORS = {
 export default function ResourceCard({ resource, onView }) {
   const [downloading, setDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const Icon = CATEGORY_ICONS[resource.category] || FileText;
   const categoryBadgeClass = CATEGORY_COLORS[resource.category] || 'bg-white/10 text-white border-white/20';
+
+  const handleShare = async (e) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/adotopoc/resource/${resource.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const input = document.createElement('input');
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleDownload = async (e) => {
     e.stopPropagation();
@@ -120,14 +138,15 @@ export default function ResourceCard({ resource, onView }) {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onView(resource);
-              }}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/80 hover:text-brand-accent border border-white/10 transition-colors"
-              title="Preview Resource"
+              onClick={handleShare}
+              className={`p-2 rounded-full border transition-colors ${
+                copied
+                  ? 'bg-brand-success/15 text-brand-success border-brand-success/40'
+                  : 'bg-white/5 hover:bg-white/10 text-white/80 hover:text-brand-accent border-white/10'
+              }`}
+              title={copied ? 'Link Copied!' : 'Share Resource'}
             >
-              <Eye className="w-4 h-4" />
+              {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
             </button>
 
             <button
