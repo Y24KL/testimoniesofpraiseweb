@@ -43,7 +43,7 @@ export default function PageTransitionLoader() {
         <img
           src="/images/Testimonies of Praise.png"
           alt=""
-          className="w-14 h-14 object-contain animate-pulse"
+          className="w-24 h-24 sm:w-28 sm:h-28 object-contain animate-pulse drop-shadow-[0_0_28px_rgba(245,197,24,0.45)]"
         />
         <div className="w-10 h-10 rounded-full border-[3px] border-brand-accent/20 border-t-brand-accent animate-spin" />
       </div>
