@@ -21,8 +21,70 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Initial site loader: inline & framework-free so it paints instantly,
+         before the app bundle, Tailwind CSS, or fonts have loaded. Hidden by
+         src/utils/siteLoader.js once the React app has mounted. -->
+    <style>
+      #site-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        background: radial-gradient(circle at 50% 38%, #1a0526 0%, #000000 72%);
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+      }
+      #site-loader.site-loader--hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #site-loader img {
+        width: 76px;
+        height: 76px;
+        object-fit: contain;
+        animation: site-loader-pulse 1.6s ease-in-out infinite;
+      }
+      #site-loader .site-loader-ring {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 3px solid rgba(245, 197, 24, 0.15);
+        border-top-color: #f5c518;
+        animation: site-loader-spin 0.85s linear infinite;
+      }
+      #site-loader .site-loader-text {
+        font-family: 'Cinzel', Georgia, serif;
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: rgba(245, 197, 24, 0.85);
+      }
+      @keyframes site-loader-spin {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes site-loader-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.06); opacity: 0.85; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #site-loader img,
+        #site-loader .site-loader-ring {
+          animation: none;
+        }
+      }
+    </style>
   </head>
   <body class="bg-black text-white selection:bg-brand-accent selection:text-brand-primary overflow-x-hidden font-poppins antialiased">
+    <div id="site-loader" aria-hidden="true">
+      <img src="/images/Testimonies of Praise.png" alt="" />
+      <div class="site-loader-ring"></div>
+      <span class="site-loader-text">Testimonies of Praise</span>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
