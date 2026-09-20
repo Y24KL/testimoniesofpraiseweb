@@ -69,15 +69,9 @@ export default function ViewerTracker({ isLive }) {
     const refreshCount = async () => {
       if (sessionId == null) return;
       try {
-        const since = new Date(Date.now() - 45000).toISOString();
-        const { count, error } = await supabase
-          .from('stream_viewers')
-          .select('*', { count: 'exact', head: true })
-          .eq('session_id', sessionId)
-          .is('left_at', null)
-          .gt('last_seen', since);
-        // Only show a real number; if the public role can't read it, the badge stays hidden.
-        if (!error && typeof count === 'number') setViewerCount(Math.max(1, count));
+        const count = await rpc('get_stream_viewer_count', { p_session_id: sessionId });
+        // Only show a real number; if the function isn't available, the badge stays hidden.
+        if (typeof count === 'number') setViewerCount(Math.max(1, count));
       } catch {
         /* non-blocking */
       }
