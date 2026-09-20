@@ -1,93 +1,113 @@
 import React, { useState, useEffect } from 'react';
 import { Users } from 'lucide-react';
 import { supabase } from '../../services/supabase';
+import { useApp } from '../../context/AppContext';
+
+const HEARTBEAT_MS = 20000;
+
+// Calls the same Supabase RPCs the admin dashboard (admin/analytics.html) reads from:
+// get_or_create_stream_session -> join_stream_session -> heartbeat_stream_viewer -> leave_stream_session
+function rpc(fn, body, { keepalive = false } = {}) {
+  return fetch(`${supabase.supabaseUrl}/rest/v1/rpc/${fn}`, {
+    method: 'POST',
+    keepalive,
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: supabase.supabaseKey,
+      Authorization: `Bearer ${supabase.supabaseKey}`,
+    },
+    body: JSON.stringify(body),
+  }).then(async (res) => {
+    if (!res.ok) throw new Error(`Supabase RPC ${fn} failed: ${res.status}`);
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  });
+}
 
 export default function ViewerTracker({ isLive }) {
-  const [viewerCount, setViewerCount] = useState(1);
+  const { stream } = useApp();
+  const title = stream?.heading || 'Live Stream';
+  const [viewerCount, setViewerCount] = useState(null);
 
   useEffect(() => {
     if (!isLive) return;
 
-    let viewerId = null;
+    let cancelled = false;
     let sessionId = null;
-    let heartbeatInterval = null;
+    let viewerId = null;
+    let heartbeatTimer = null;
 
-    const initTracking = async () => {
+    const join = async () => {
+      if (viewerId != null || cancelled) return;
       try {
-        // Fetch or create latest stream session
-        const { data: sessions } = await supabase
-          .from('stream_sessions')
-          .select('id')
-          .is('ended_at', null)
-          .order('started_at', { ascending: false })
-          .limit(1);
-
-        sessionId = sessions && sessions.length > 0 ? sessions[0].id : null;
-
-        if (sessionId) {
-          const userName = localStorage.getItem('top_chat_name') || 'Anonymous Viewer';
-          const { data: viewer } = await supabase
-            .from('stream_viewers')
-            .insert([{
-              session_id: sessionId,
-              name: userName,
-              group_size: 1,
-              joined_at: new Date().toISOString(),
-              last_seen: new Date().toISOString()
-            }])
-            .select('id')
-            .single();
-
-          if (viewer) viewerId = viewer.id;
-
-          // Heartbeat every 20s
-          heartbeatInterval = setInterval(async () => {
-            if (viewerId) {
-              await supabase
-                .from('stream_viewers')
-                .update({ last_seen: new Date().toISOString() })
-                .eq('id', viewerId);
-            }
-
-            // Count active viewers in last 45s
-            const activeThreshold = new Date(Date.now() - 45000).toISOString();
-            const { count } = await supabase
-              .from('stream_viewers')
-              .select('*', { count: 'exact', head: true })
-              .eq('session_id', sessionId)
-              .is('left_at', null)
-              .gt('last_seen', activeThreshold);
-
-            if (count) setViewerCount(Math.max(1, count));
-          }, 20000);
+        if (sessionId == null) {
+          sessionId = await rpc('get_or_create_stream_session', { p_title: title });
         }
+        const name = localStorage.getItem('top_chat_name') || null;
+        const id = await rpc('join_stream_session', {
+          p_session_id: sessionId,
+          p_name: name,
+          p_group_size: 1,
+        });
+        if (cancelled) {
+          rpc('leave_stream_session', { p_viewer_id: id }, { keepalive: true }).catch(() => {});
+          return;
+        }
+        viewerId = id;
       } catch (err) {
-        console.warn('Viewer tracking fallback active:', err);
-        // Realistic simulated base count if table not yet seeded
-        setViewerCount(Math.floor(Math.random() * 25) + 42);
+        console.warn('Stream viewer tracking unavailable (non-blocking):', err);
       }
     };
 
-    initTracking();
+    const leave = () => {
+      if (viewerId == null) return;
+      const id = viewerId;
+      viewerId = null;
+      rpc('leave_stream_session', { p_viewer_id: id }, { keepalive: true }).catch(() => {});
+    };
 
-    const handleUnload = () => {
-      if (viewerId) {
-        navigator.sendBeacon?.(
-          `${supabase.supabaseUrl}/rest/v1/stream_viewers?id=eq.${viewerId}`,
-          JSON.stringify({ left_at: new Date().toISOString() })
-        );
+    const refreshCount = async () => {
+      if (sessionId == null) return;
+      try {
+        const since = new Date(Date.now() - 45000).toISOString();
+        const { count, error } = await supabase
+          .from('stream_viewers')
+          .select('*', { count: 'exact', head: true })
+          .eq('session_id', sessionId)
+          .is('left_at', null)
+          .gt('last_seen', since);
+        // Only show a real number; if the public role can't read it, the badge stays hidden.
+        if (!error && typeof count === 'number') setViewerCount(Math.max(1, count));
+      } catch {
+        /* non-blocking */
       }
     };
 
-    window.addEventListener('beforeunload', handleUnload);
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') leave();
+      else join(); // came back to the tab: register again so the admin counts them
+    };
+
+    join().then(refreshCount);
+
+    heartbeatTimer = setInterval(() => {
+      if (viewerId != null) rpc('heartbeat_stream_viewer', { p_viewer_id: viewerId }).catch(() => {});
+      refreshCount();
+    }, HEARTBEAT_MS);
+
+    window.addEventListener('pagehide', leave);
+    document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      if (heartbeatInterval) clearInterval(heartbeatInterval);
-      window.removeEventListener('beforeunload', handleUnload);
+      cancelled = true;
+      clearInterval(heartbeatTimer);
+      window.removeEventListener('pagehide', leave);
+      document.removeEventListener('visibilitychange', onVisibility);
+      leave();
     };
-  }, [isLive]);
+  }, [isLive, title]);
 
-  if (!isLive) return null;
+  if (!isLive || viewerCount == null) return null;
 
   return (
     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-950/60 border border-red-500/40 text-red-300 text-xs font-bold tracking-wider uppercase backdrop-blur-md">
