@@ -1,9 +1,9 @@
 {
-  "status": false,
+  "status": true,
+  "youtubeVideoId": "https://www.youtube.com/live/04O9lmaBUQo?si=wosuiLwGtpLMpNFx",
   "streamUrl": "https://vcpout-lw-wdc-01-sp.ceflixcdn.com/lxp/play1/playlist.m3u8",
-  "youtubeVideoId": "https://www.youtube.com/live/XVZdyGkK_Js?si=vdC5C_UY_kP_O1k0",
-  "offlineVideoUrl": "",
   "poster": "images/live-poster.jpg",
+  "offlineVideoUrl": "",
   "heading": "Testimonies of Praise Live",
   "description": "Join thousands across the globe as we celebrate the triumphs of faith. Your miracle is next!"
 }
